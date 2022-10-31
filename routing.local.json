@@ -1,0 +1,203 @@
+{
+  "services": {
+    "kube_tools_gateway": {
+      "base_url": "http://kube-tools",
+      "port": 80,
+      "cors": {
+        "origins": "*",
+        "headers": "*",
+        "methods": "*"
+      },
+      "routing": [
+        {
+          "gateway_endpoint": "/api/jobs",
+          "service_endpoint": "/api/jobs",
+          "allowed_methods": ["GET", "POST"]
+        },
+        {
+          "gateway_endpoint": "/api/jobs/<id>",
+          "service_endpoint": "/api/jobs/<id>",
+          "allowed_methods": ["DELETE"]
+        },
+        {
+          "gateway_endpoint": "/api/jobs/configuration",
+          "service_endpoint": "/api/jobs/configuration",
+          "allowed_methods": ["GET", "POST", "PUT"]
+        },
+        {
+          "gateway_endpoint": "/api/jobs/configuration/<id>",
+          "service_endpoint": "/api/jobs/configuration/<id>",
+          "allowed_methods": ["DELETE"]
+        },
+        {
+          "gateway_endpoint": "/api/tools/rpi/vendors",
+          "service_endpoint": "/api/rpi/vendors",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/tools/rpi/capture",
+          "service_endpoint": "/api/rpi/capture",
+          "allowed_methods": ["POST"]
+        }
+      ]
+    },
+    "kasa_gateway": {
+      "base_url": "http://127.0.0.1",
+      "port": 5091,
+      "routing": [
+        {
+          "gateway_endpoint": "/api/kasa/remote",
+          "service_endpoint": "/api/remote",
+          "allowed_methods": ["GET", "POST"]
+        },
+        {
+          "gateway_endpoint": "/api/kasa/remote/execute",
+          "service_endpoint": "/api/remote/execute",
+          "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/kasa/device/<id>",
+          "service_endpoint": "/api/device/<id>",
+          "allowed_methods": ["GET", "DELETE"]
+        },
+        {
+          "gateway_endpoint": "/api/kasa/device",
+          "service_endpoint": "/api/device",
+          "allowed_methods": ["GET", "POST", "PUT"]
+        },
+        {
+          "gateway_endpoint": "/api/kasa/device/sync",
+          "service_endpoint": "/api/device/sync",
+          "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/kasa/scene",
+          "service_endpoint": "/api/scene",
+          "allowed_methods": ["GET", "POST", "PUT"]
+        },
+        {
+          "gateway_endpoint": "/api/kasa/scene/<id>",
+          "service_endpoint": "/api/scene/<id>",
+          "allowed_methods": ["GET", "DELETE"]
+        },
+        {
+          "gateway_endpoint": "/api/kasa/scene/<id>/run",
+          "service_endpoint": "/api/scene/<id>/run",
+          "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/kasa/preset",
+          "service_endpoint": "/api/preset",
+          "allowed_methods": ["GET", "POST", "PUT"]
+        },
+        {
+          "gateway_endpoint": "/api/kasa/preset/<id>",
+          "service_endpoint": "/api/preset/<id>",
+          "allowed_methods": ["GET", "DELETE"]
+        }
+      ]
+    },
+    "admin_gateway": {
+      "base_url": "http://127.0.0.1",
+      "port": 5086,
+      "cors": {
+        "origins": "*",
+        "headers": "*",
+        "methods": "*"
+      },
+      "routing": [
+        {
+          "gateway_endpoint": "/api/admin/login",
+          "service_endpoint": "/api/login",
+          "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/admin/login/passcode",
+          "service_endpoint": "/api/login/passcode",
+          "allowed_methods": ["POST", "PUT"]
+        },
+        {
+          "gateway_endpoint": "/api/admin/logs/aks/pods",
+          "service_endpoint": "/api/logs/aks/pods",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/admin/system/logs",
+          "service_endpoint": "/api/system/logs",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/admin/logs/aks/namespace/<namespace>/pod/<pod>",
+          "service_endpoint": "/api/logs/aks/namespace/<namespace>/pod/<pod>",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/admin/cache/<key>",
+          "service_endpoint": "/api/cache/<key>",
+          "allowed_methods": ["GET", "POST"]
+        }
+      ]
+    },
+    "scheduler_gateway": {
+      "base_url": "http://localhost",
+      "port": "5147",
+      "routing": [
+        {
+          "gateway_endpoint": "/api/scheduler/client",
+          "service_endpoint": "/api/client",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/scheduler/client/<client_id>/token",
+          "service_endpoint": "/api/client/<client_id>/token",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/scheduler/schedule/<schedule_id>",
+          "service_endpoint": "/api/schedule/<schedule_id>",
+          "allowed_methods": ["GET", "DELETE"]
+        },
+        {
+          "gateway_endpoint": "/api/scheduler/schedule",
+          "service_endpoint": "/api/schedule",
+          "allowed_methods": ["GET", "POST", "PUT"]
+        },
+        {
+          "gateway_endpoint": "/api/scheduler/schedule/<schedule_id>/run",
+          "service_endpoint": "/api/schedule/<schedule_id>/run",
+          "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/scheduler/schedule/service/poll",
+          "service_endpoint": "/api/schedule/service/poll",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/scheduler/schedule/<schedule_id>/run",
+          "service_endpoint": "/api/schedule/<schedule_id>/run",
+          "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/scheduler/schedule/link",
+          "service_endpoint": "/api/schedule/link",
+          "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/scheduler/schedule/unlink",
+          "service_endpoint": "/api/schedule/unlink",
+          "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/scheduler/task",
+          "service_endpoint": "/api/task",
+          "allowed_methods": ["GET", "PUT", "POST", "DELETE"]
+        },
+        {
+          "gateway_endpoint": "/api/scheduler/task/<task_id>",
+          "service_endpoint": "/api/task/<task_id>",
+          "allowed_methods": ["GET", "DELETE"]
+        }
+      ]
+    }
+  }
+}
