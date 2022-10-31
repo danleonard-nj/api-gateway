@@ -305,16 +305,6 @@
           "allowed_methods": ["POST"]
         },
         {
-          "gateway_endpoint": "/api/scheduler/schedule/link",
-          "service_endpoint": "/api/schedule/link",
-          "allowed_methods": ["POST"]
-        },
-        {
-          "gateway_endpoint": "/api/scheduler/schedule/unlink",
-          "service_endpoint": "/api/schedule/unlink",
-          "allowed_methods": ["POST"]
-        },
-        {
           "gateway_endpoint": "/api/scheduler/task",
           "service_endpoint": "/api/task",
           "allowed_methods": ["GET", "PUT", "POST", "DELETE"]
