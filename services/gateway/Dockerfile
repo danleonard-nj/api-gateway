@@ -1,0 +1,15 @@
+FROM azureks.azurecr.io/base/pybase:v1.2 as base
+
+WORKDIR /app
+
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+RUN apt-get update && apt-get dist-upgrade -y
+
+FROM base AS main
+
+COPY . .
+
+EXPOSE 80
+
+CMD ["bash", "startup.sh"]
