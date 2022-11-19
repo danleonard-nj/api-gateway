@@ -1,7 +1,7 @@
 {
   "services": {
     "fitness_gateway": {
-      "base_url": "http://fitness",
+      "base_url": "http://fitness.kube-tools.svc.cluster.local",
       "port": 80,
       "routing": [
         {
@@ -82,7 +82,7 @@
       ]
     },
     "kube_tools_gateway": {
-      "base_url": "http://kube-tools",
+      "base_url": "http://kube-tools.kube-tools.svc.cluster.local",
       "port": 80,
       "routing": [
         {
@@ -92,100 +92,8 @@
         }
       ]
     },
-    "task_provider_gateway": {
-      "base_url": "http://task-provider",
-      "port": 80,
-      "routing": [
-        {
-          "gateway_endpoint": "/api/task-provider/task/<task_key>/poll",
-          "service_endpoint": "/api/task/<task_key>/poll",
-          "allowed_methods": ["GET"]
-        },
-        {
-          "gateway_endpoint": "/api/task-provider/task/<task_key>/dispatch",
-          "service_endpoint": "/api/task/<task_key>/dispatch",
-          "allowed_methods": ["POST"]
-        }
-      ]
-    },
-    "reminders_gateway": {
-      "base_url": "http://net-reminders",
-      "port": 80,
-      "routing": [
-        {
-          "gateway_endpoint": "/api/reminders",
-          "service_endpoint": "/api/reminders",
-          "allowed_methods": ["GET"]
-        },
-        {
-          "gateway_endpoint": "/api/reminders/triggers",
-          "service_endpoint": "/api/reminders/triggers",
-          "allowed_methods": ["POST"]
-        },
-        {
-          "gateway_endpoint": "/api/reminders/generic",
-          "service_endpoint": "/api/reminders/generic",
-          "allowed_methods": ["GET", "POST", "PUT"]
-        },
-        {
-          "gateway_endpoint": "/api/reminders/generic/<id>",
-          "service_endpoint": "/api/reminders/generic/<id>",
-          "allowed_methods": ["GET", "DELETE"]
-        },
-        {
-          "gateway_endpoint": "/api/reminders/generic/triggers",
-          "service_endpoint": "/api/reminders/generic/triggers",
-          "allowed_methods": ["GET", "POST", "PUT"]
-        },
-        {
-          "gateway_endpoint": "/api/reminders/destination",
-          "service_endpoint": "/api/reminders/destination",
-          "allowed_methods": ["GET", "POST", "PUT"]
-        },
-        {
-          "gateway_endpoint": "/api/reminders/destination/<id>",
-          "service_endpoint": "/api/reminders/destination/<id>",
-          "allowed_methods": ["GET", "DELETE"]
-        },
-        {
-          "gateway_endpoint": "/api/reminders/destination/triggers",
-          "service_endpoint": "/api/reminders/destination/triggers",
-          "allowed_methods": ["GET", "POST", "PUT"]
-        },
-        {
-          "gateway_endpoint": "/api/reminders/utilities/cron",
-          "service_endpoint": "/api/utilities/cron",
-          "allowed_methods": ["POST"]
-        },
-        {
-          "gateway_endpoint": "/api/reminders/utilities/timezones",
-          "service_endpoint": "/api/utilities/timezones",
-          "allowed_methods": ["GET"]
-        },
-        {
-          "gateway_endpoint": "/api/reminders/locations",
-          "service_endpoint": "/api/locations",
-          "allowed_methods": ["GET", "POST", "PUT"]
-        },
-        {
-          "gateway_endpoint": "/api/reminders/locations/<id>",
-          "service_endpoint": "/api/locations/<id>",
-          "allowed_methods": ["GET", "DELETE"]
-        },
-        {
-          "gateway_endpoint": "/api/reminders/notifications",
-          "service_endpoint": "/api/notifications",
-          "allowed_methods": ["GET", "POST", "PUT"]
-        },
-        {
-          "gateway_endpoint": "/api/reminders/notifications/<id>",
-          "service_endpoint": "/api/notifications/<id>",
-          "allowed_methods": ["GET", "DELETE"]
-        }
-      ]
-    },
     "kasa_gateway": {
-      "base_url": "http://kasa",
+      "base_url": "http://kasa.kube-tools.svc.cluster.local",
       "port": 80,
       "routing": [
         {
@@ -266,7 +174,7 @@
       ]
     },
     "scheduler_gateway": {
-      "base_url": "http://net-scheduler",
+      "base_url": "http://net-scheduler.kube-tools.svc.cluster.local",
       "port": "80",
       "routing": [
         {

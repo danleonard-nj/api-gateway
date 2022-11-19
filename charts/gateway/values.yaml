@@ -11,11 +11,6 @@ imagePullSecrets:
 nameOverride: "gateway"
 fullnameOverride: "gateway"
 
-# environment:
-#   envFrom:
-#     - secretName: azure
-#     - secretName: gateway-env
-
 probes:
   endpoints:
     liveness: "/api/health/alive"
