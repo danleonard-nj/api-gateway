@@ -223,6 +223,186 @@
           "allowed_methods": ["GET", "DELETE"]
         }
       ]
+    },
+    "twilio_gateway": {
+      "base_url": "http://twilio-gateway.gateway.svc.cluster.local",
+      "probes": ["/api/health/alive", "/api/health/ready"],
+      "routing": [
+        {
+          "gateway_endpoint": "/api/twilio/message",
+          "service_endpoint": "/api/twilio/message",
+          "allowed_methods": ["POST"]
+        }
+      ]
+    },
+    "email_gateway": {
+      "base_url": "http://email-gateway.gateway.svc.cluster.local",
+      "probes": ["/api/health/alive", "/api/health/ready"],
+      "routing": [
+        {
+          "gateway_endpoint": "/api/email/send",
+          "service_endpoint": "/api/email/send",
+          "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/email/datatable",
+          "service_endpoint": "/api/email/datatable",
+          "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/email/json",
+          "service_endpoint": "/api/email/json",
+          "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/email/styles",
+          "service_endpoint": "/api/email/styles",
+          "allowed_methods": ["GET"]
+        }
+      ]
+    },
+    "reverb_gateway": {
+      "base_url": "http://reverb-gateway.gateway.svc.cluster.local",
+      "probes": ["/api/health/alive", "/api/health/ready"],
+      "routing": [
+        {
+          "gateway_endpoint": "/api/reverb/orders",
+          "service_endpoint": "/api/orders",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/reverb/orders/<order>",
+          "service_endpoint": "/api/orders/<order>",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/reverb/orders/<order>/tracking",
+          "service_endpoint": "/api/orders/<order>/tracking",
+          "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/reverb/shipengine/shipments/<order>",
+          "service_endpoint": "/api/shipengine/shipments/<order>",
+          "allowed_methods": ["POST"]
+        }
+      ]
+    },
+    "shipengine_gateway": {
+      "base_url": "http://shipengine-gateway.gateway.svc.cluster.local",
+      "probes": ["/api/health/alive", "/api/health/ready"],
+      "routing": [
+        {
+          "gateway_endpoint": "/api/shipengine/carriers",
+          "service_endpoint": "/api/carriers",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/shipengine/carriers/balances",
+          "service_endpoint": "/api/carriers/balances",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/shipengine/carriers/services",
+          "service_endpoint": "/api/carriers/services",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/shipengine/shipments/<shipment_id>/label",
+          "service_endpoint": "/api/shipments/<shipment_id>/label",
+          "allowed_methods": ["GET", "POST"]
+        },
+        {
+          "gateway_endpoint": "/api/shipengine/rates",
+          "service_endpoint": "/api/rates",
+          "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/shipengine/shipment",
+          "service_endpoint": "/api/shipment",
+          "allowed_methods": ["POST", "GET"]
+        },
+        {
+          "gateway_endpoint": "/api/shipengine/shipment/<shipment_id>/cancel",
+          "service_endpoint": "/api/shipment/<shipment_id>/cancel",
+          "allowed_methods": ["PUT"]
+        }
+      ]
+    },
+    "azure_gateway": {
+      "base_url": "http://azure-gateway.gateway.svc.cluster.local",
+      "probes": ["/api/health/alive", "/api/health/ready"],
+      "routing": [
+        {
+          "gateway_endpoint": "/api/azure/usage",
+          "service_endpoint": "/api/usage",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/azure/cost/timeframe/daily/groupby/product",
+          "service_endpoint": "/api/cost/timeframe/daily/groupby/product",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/azure/logs/query",
+          "service_endpoint": "/api/logs/query",
+          "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/azure/logs/tables",
+          "service_endpoint": "/api/logs/tables",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/azure/aks/pods/names",
+          "service_endpoint": "/api/aks/pods/names",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/azure/aks/pods/images",
+          "service_endpoint": "/api/aks/pods/images",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/azure/aks/<namespace>/<pod>/logs",
+          "service_endpoint": "/api/aks/<namespace>/<pod>/logs",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/azure/acr/repositories",
+          "service_endpoint": "/api/acr/repositories",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/azure/acr/manifests",
+          "service_endpoint": "/api/acr/manifests",
+          "allowed_methods": ["GET", "DELETE"]
+        },
+        {
+          "gateway_endpoint": "/api/azure/authentication/scoped",
+          "service_endpoint": "/api/authentication/scoped",
+          "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/azure/authentication/resource",
+          "service_endpoint": "/api/authentication/resource",
+          "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/azure/devops/builds/<project>/name/<build_name>",
+          "service_endpoint": "/api/devops/builds/<project>/name/<build_name>",
+          "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/azure/devops/builds/<project>",
+          "service_endpoint": "/api/devops/builds/<project>",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/azure/ad/applications",
+          "service_endpoint": "/api/ad/applications",
+          "allowed_methods": ["GET"]
+        }
+      ]
     }
   }
 }
