@@ -92,6 +92,42 @@
         }
       ]
     },
+    "vault_gateway": {
+      "base_url": "http://vault-api.vault.svc.cluster.local",
+      "port": 80,
+      "routing": [
+        {
+          "gateway_endpoint": "/api/vault/secrets/directory/<directory>/key/<key>",
+          "service_endpoint": "/api/vault/secrets/directory/<directory>/key/<key>",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/vault/secrets",
+          "service_endpoint": "/api/vault/secrets",
+          "allowed_methods": ["POST", "PUT"]
+        },
+        {
+          "gateway_endpoint": "/api/vault/secrets/<id>",
+          "service_endpoint": "/api/vault/secrets/<id>",
+          "allowed_methods": ["DELETE"]
+        },
+        {
+          "gateway_endpoint": "/api/vault/secrets/directory",
+          "service_endpoint": "/api/vault/secrets/directory",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/vault/secrets/directory/<directory>",
+          "service_endpoint": "/api/vault/secrets/directory/<directory>",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/vault/generate",
+          "service_endpoint": "/api/generate",
+          "allowed_methods": ["POST"]
+        }
+      ]
+    },
     "kasa_gateway": {
       "base_url": "http://kasa.kube-tools.svc.cluster.local",
       "port": 80,
