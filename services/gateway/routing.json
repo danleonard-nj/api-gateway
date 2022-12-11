@@ -206,6 +206,16 @@
           "gateway_endpoint": "/api/kasa/device/<id>/response",
           "service_endpoint": "/api/device/<id>/response",
           "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/kasa/cache/device/purge",
+          "service_endpoint": "/api/cache/device/purge",
+          "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/kasa/cache/purge",
+          "service_endpoint": "/api/cache/purge",
+          "allowed_methods": ["POST"]
         }
       ]
     },
