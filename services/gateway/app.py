@@ -1,27 +1,37 @@
 from dotenv import load_dotenv
 from framework.logger.providers import get_logger
 from quart import Quart
-
 from routes.health import health_bp
+from utilities.provider import ContainerProvider
+from framework.abstractions.abstract_request import RequestContextProvider
+from framework.di.static_provider import InternalProvider
+from framework.serialization.serializer import configure_serializer
+
 from services.gateway import ApiGateway
-from utilities.provider import ContainerProvider, add_container_hook
 
 load_dotenv()
-
 
 app = Quart(__name__)
 logger = get_logger(__name__)
 
 
-container = ContainerProvider.get_container()
-proxy = ApiGateway(
-    container=container)
+ContainerProvider.initialize_provider()
+InternalProvider.bind(ContainerProvider.get_service_provider())
 
-proxy.configure(
-    app=app)
+
+container = ContainerProvider.get_service_provider()
+proxy = ApiGateway(service_provider=container)
+
+proxy.configure(app=app)
 proxy.build_maps()
 
 app.register_blueprint(health_bp)
+
+
+@app.before_serving
+async def startup():
+    RequestContextProvider.initialize_provider(
+        app=app)
 
 
 @app.after_request
@@ -32,7 +42,7 @@ def after_request(response):
     return response
 
 
-add_container_hook(app)
+configure_serializer(app)
 
 
 if __name__ == '__main__':

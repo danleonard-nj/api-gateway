@@ -1,26 +1,28 @@
 import json
-from typing import Dict
+import os
 
 from framework.configuration.configuration import Configuration
-from framework.constants.constants import Environment
 from framework.logger.providers import get_logger
 from framework.validators.nulls import not_none
-from utilities.constants import RouteConfigConstants
+from framework.exceptions.nulls import ArgumentNullException
+from framework.di.service_provider import ServiceProvider
 
 from services.gateway_map import GatewayMap
 from services.proxy_handler import ProxyHandler
 from services.service_configuration import ServiceConfiguration
 from services.service_map import ServiceMap
 
+
 logger = get_logger(__name__)
 
 
 class ApiGateway:
-    def __init__(self, container=None):
-        not_none(container, 'container')
-        self.container = container
-
-        self.configuration = container.resolve(Configuration)
+    def __init__(
+        self,
+        service_provider: ServiceProvider
+    ):
+        self.__service_provider = service_provider
+        self.__configuration = service_provider.resolve(Configuration)
 
     def configure(
         self,
@@ -32,33 +34,38 @@ class ApiGateway:
         '''
 
         self.app = app
-        self.routing = self.load_route_config()
+        self.routing = self.__compile_route_configs()
         self.gateway_map = GatewayMap()
         return self
 
-    def load_route_config(
+    def __load_route_config_services(
+        self,
+        filename: str
+    ):
+        ArgumentNullException.if_none_or_whitespace(filename, 'filename')
+
+        with open(filename, 'r') as file:
+            config = json.loads(file.read())
+            return config.get('services')
+
+    def __compile_route_configs(
         self
-    ) -> Dict:
-        '''
-        Load the routing configuration file
-        '''
+    ):
+        configs = dict()
 
-        if self.configuration.environment == Environment.DEVELOPMENT:
-            logger.info(
-                'Route config: loading development route configuration')
-            config_path = RouteConfigConstants.ROUTE_CONFIG_DEVELOPMENT
+        for base_filename in os.listdir('mapping'):
+            filename = f'./mapping/{base_filename}'
+            logger.info(f"Loadeding routes from config: {filename}")
 
-        elif self.configuration.environment == Environment.LOCAL:
-            logger.info('Route config: loading local route configuration')
-            config_path = RouteConfigConstants.ROUTE_CONFIG_LOCAL
+            config = self.__load_route_config_services(
+                filename=filename)
 
-        else:
-            logger.info(
-                'Route configuration: loading production route configuration')
-            config_path = RouteConfigConstants.ROUTE_CONFIG_PRODUCTION
+            configs |= config
+            logger.info(f"{len(config)} service routings parsed: {filename}")
 
-        with open(config_path, 'r') as file:
-            return json.loads(file.read())
+        return {
+            'services': configs
+        }
 
     def build_maps(
         self
@@ -77,11 +84,11 @@ class ApiGateway:
                 service=services.get(service_key),
                 name=service_key)
 
-            not_none(self.configuration, 'configuration')
-            logger.info(f'Constructing service map: {service_key}')
+            not_none(self.__configuration, 'configuration')
+            logger.info(f'Creating map for service: {service_key}')
 
             service_map = ServiceMap(
-                container=self.container,
+                container=self.__service_provider,
                 service=service_configuration,
                 service_name=service_key).build()
 
@@ -89,7 +96,7 @@ class ApiGateway:
                 service_map=service_map)
 
             proxy_handler = ProxyHandler(
-                container=self.container,
+                service_provider=self.__service_provider,
                 service=service_map)
 
             logger.info(
@@ -97,7 +104,7 @@ class ApiGateway:
 
             for route in service_map.route_maps:
                 logger.info(
-                    f'Binding proxy object to route: {route.gateway_endpoint}')
+                    f'Binding proxy view function to route: {route.gateway_endpoint}')
 
                 route.map_route(
                     app=self.app,

@@ -333,37 +333,6 @@
         }
       ]
     },
-    "features_gateway": {
-      "base_url": "http://features-api.kube-tools.svc.cluster.local",
-      "probes": ["/api/health/alive", "/api/health/ready"],
-      "routing": [
-        {
-          "gateway_endpoint": "/api/feature/id/<feature_id>",
-          "service_endpoint": "/api/feature/id/<feature_id>",
-          "allowed_methods": ["DELETE"]
-        },
-        {
-          "gateway_endpoint": "/api/feature/id/<feature_id>",
-          "service_endpoint": "/api/feature/id/<feature_id>",
-          "allowed_methods": ["GET"]
-        },
-        {
-          "gateway_endpoint": "/api/feature/name/<feature_name>",
-          "service_endpoint": "/api/feature/name/<feature_name>",
-          "allowed_methods": ["POST"]
-        },
-        {
-          "gateway_endpoint": "/api/feature",
-          "service_endpoint": "/api/feature",
-          "allowed_methods": ["POST", "PUT", "GET"]
-        },
-        {
-          "gateway_endpoint": "/api/feature/evaluate/<feature_key>",
-          "service_endpoint": "/api/feature/evaluate/<feature_key>",
-          "allowed_methods": ["GET"]
-        }
-      ]
-    },
     "shipengine_gateway": {
       "base_url": "http://shipengine-gateway.gateway.svc.cluster.local",
       "probes": ["/api/health/alive", "/api/health/ready"],
