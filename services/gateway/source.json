@@ -1,0 +1,6 @@
+[
+  {
+    "source": "configs/kube-tools/gateway/config.json",
+    "target": "./services/gateway/config.json"
+  }
+]
