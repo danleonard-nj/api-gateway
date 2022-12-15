@@ -1,7 +1,7 @@
 {
   "services": {
     "features_gateway": {
-      "base_url": "http://features-api.kube-tools.svc.cluster.local",
+      "base_url": "http://feature-api.kube-tools.svc.cluster.local",
       "probes": ["/api/health/alive", "/api/health/ready"],
       "routing": [
         {
