@@ -7,11 +7,11 @@
         {
           "gateway_endpoint": "/api/feature/id/<feature_id>",
           "service_endpoint": "/api/feature/id/<feature_id>",
-          "allowed_methods": ["DELETE"]
+          "allowed_methods": ["DELETE", "GET"]
         },
         {
-          "gateway_endpoint": "/api/feature/id/<feature_id>",
-          "service_endpoint": "/api/feature/id/<feature_id>",
+          "gateway_endpoint": "/api/feature/key/<feature_key>",
+          "service_endpoint": "/api/feature/key/<feature_key>",
           "allowed_methods": ["GET"]
         },
         {
