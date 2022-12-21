@@ -177,48 +177,33 @@
       "port": "80",
       "routing": [
         {
-          "gateway_endpoint": "/api/scheduler/client",
-          "service_endpoint": "/api/identityclient",
-          "allowed_methods": ["GET"]
-        },
-        {
-          "gateway_endpoint": "/api/scheduler/client/<client_id>/token",
-          "service_endpoint": "/api/client/<client_id>/token",
-          "allowed_methods": ["GET"]
-        },
-        {
-          "gateway_endpoint": "/api/scheduler/schedule/<schedule_id>",
-          "service_endpoint": "/api/schedule/<schedule_id>",
+          "gateway_endpoint": "/api/schedule/<schedule_id>",
+          "service_endpoint": "/api/Schedule/<schedule_id>",
           "allowed_methods": ["GET", "DELETE"]
         },
         {
           "gateway_endpoint": "/api/scheduler/schedule",
-          "service_endpoint": "/api/schedule",
+          "service_endpoint": "/api/Schedule",
           "allowed_methods": ["GET", "POST", "PUT"]
         },
         {
           "gateway_endpoint": "/api/scheduler/schedule/<schedule_id>/run",
-          "service_endpoint": "/api/schedule/<schedule_id>/run",
+          "service_endpoint": "/api/Schedule/<schedule_id>/Run",
           "allowed_methods": ["POST"]
         },
         {
-          "gateway_endpoint": "/api/scheduler/schedule/service/poll",
-          "service_endpoint": "/api/schedule/service/poll",
+          "gateway_endpoint": "/api/scheduler/schedule/Poll",
+          "service_endpoint": "/api/Schedule/Poll",
           "allowed_methods": ["GET"]
         },
         {
-          "gateway_endpoint": "/api/scheduler/schedule/<schedule_id>/run",
-          "service_endpoint": "/api/schedule/<schedule_id>/run",
-          "allowed_methods": ["POST"]
-        },
-        {
           "gateway_endpoint": "/api/scheduler/task",
-          "service_endpoint": "/api/task",
+          "service_endpoint": "/api/Task",
           "allowed_methods": ["GET", "PUT", "POST", "DELETE"]
         },
         {
           "gateway_endpoint": "/api/scheduler/task/<task_id>",
-          "service_endpoint": "/api/task/<task_id>",
+          "service_endpoint": "/api/Task/<task_id>",
           "allowed_methods": ["GET", "DELETE"]
         }
       ]
