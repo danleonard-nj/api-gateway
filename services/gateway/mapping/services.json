@@ -205,6 +205,11 @@
           "gateway_endpoint": "/api/scheduler/task/<task_id>",
           "service_endpoint": "/api/Task/<task_id>",
           "allowed_methods": ["GET", "DELETE"]
+        },
+        {
+          "gateway_endpoint": "/api/scheduler/history",
+          "service_endpoint": "/api/History",
+          "allowed_methods": ["GET"]
         }
       ]
     }
