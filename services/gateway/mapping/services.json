@@ -86,16 +86,6 @@
       "port": 80,
       "routing": [
         {
-          "gateway_endpoint": "/api/kasa/remote",
-          "service_endpoint": "/api/remote",
-          "allowed_methods": ["GET", "POST"]
-        },
-        {
-          "gateway_endpoint": "/api/kasa/remote/execute",
-          "service_endpoint": "/api/remote/execute",
-          "allowed_methods": ["POST"]
-        },
-        {
           "gateway_endpoint": "/api/kasa/device/<id>",
           "service_endpoint": "/api/device/<id>",
           "allowed_methods": ["GET", "DELETE"]
@@ -168,6 +158,17 @@
         {
           "gateway_endpoint": "/api/kasa/cache/purge",
           "service_endpoint": "/api/cache/purge",
+          "allowed_methods": ["POST"]
+        }
+      ]
+    },
+    "kube_tools_api": {
+      "base_url": "http://kube-tools.kube-tools.svc.cluster.local",
+      "port": 80,
+      "routing": [
+        {
+          "gateway_endpoint": "/api/tools/location/history/query",
+          "service_endpoint": "/api/location/history/query",
           "allowed_methods": ["POST"]
         }
       ]
