@@ -177,7 +177,7 @@
       "port": "80",
       "routing": [
         {
-          "gateway_endpoint": "/api/schedule/<schedule_id>",
+          "gateway_endpoint": "/api/scheduler/<schedule_id>",
           "service_endpoint": "/api/Schedule/<schedule_id>",
           "allowed_methods": ["GET", "DELETE"]
         },
