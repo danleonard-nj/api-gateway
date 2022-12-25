@@ -177,7 +177,7 @@
       "port": "80",
       "routing": [
         {
-          "gateway_endpoint": "/api/scheduler/<schedule_id>",
+          "gateway_endpoint": "/api/scheduler/schedule/<schedule_id>",
           "service_endpoint": "/api/Schedule/<schedule_id>",
           "allowed_methods": ["GET", "DELETE"]
         },
@@ -192,7 +192,7 @@
           "allowed_methods": ["POST"]
         },
         {
-          "gateway_endpoint": "/api/scheduler/schedule/Poll",
+          "gateway_endpoint": "/api/scheduler/schedule/poll",
           "service_endpoint": "/api/Schedule/Poll",
           "allowed_methods": ["GET"]
         },
