@@ -5,12 +5,12 @@
       "port": 80,
       "routing": [
         {
-          "gateway_endpoint": "/api/vault/secrets/directory/<directory>/name/name>",
+          "gateway_endpoint": "/api/vault/secrets/directory/<directory>/name/<name>",
           "service_endpoint": "/api/secrets/directory/<directory>/name/<name>",
           "allowed_methods": ["GET"]
         },
         {
-          "gateway_endpoint": "/api/vault/secrets/directory/<directory>/name/name>/versions",
+          "gateway_endpoint": "/api/vault/secrets/directory/<directory>/name/<name>/versions",
           "service_endpoint": "/api/secrets/directory/<directory>/name/<name>/versions",
           "allowed_methods": ["GET"]
         },
