@@ -10,6 +10,11 @@
           "allowed_methods": ["GET"]
         },
         {
+          "gateway_endpoint": "/api/vault/secrets/directory/<directory>/name/name>",
+          "service_endpoint": "/api/vault/secrets/directory/<directory>/name/<name>",
+          "allowed_methods": ["GET"]
+        },
+        {
           "gateway_endpoint": "/api/vault/secrets",
           "service_endpoint": "/api/vault/secrets",
           "allowed_methods": ["POST", "PUT"]
@@ -33,6 +38,11 @@
           "gateway_endpoint": "/api/vault/generate",
           "service_endpoint": "/api/generate",
           "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/vault/configuration",
+          "service_endpoint": "/api/configuration",
+          "allowed_methods": ["PUT", "GET"]
         }
       ]
     }
