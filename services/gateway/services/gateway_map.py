@@ -47,9 +47,9 @@ class GatewayMap:
         '''
 
         for service in self.services:
-            if endpoint in service.index:
+            if endpoint in service.__mapping:
                 logger.info(f'{service.base_url}: route match')
-                return service.index[endpoint]
+                return service.__mapping[endpoint]
 
     def bind_service_map(
         self,

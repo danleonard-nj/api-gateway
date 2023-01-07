@@ -1,6 +1,5 @@
-from ctypes import Union
-from typing import Any, Callable
 import uuid
+from typing import Any, Callable
 
 
 class RouteMap:
@@ -8,18 +7,9 @@ class RouteMap:
         self.route = route
         self.endpoint_id = str(uuid.uuid4())
 
-    @property
-    def service_endpoint(self):
-        return self.route.get('service_endpoint')
-
-    @property
-    def gateway_endpoint(self):
-        return self.route.get('gateway_endpoint')
-
-    @property
-    def allowed_methods(self):
-        methods = self.route.get('allowed_methods') or []
-        return methods
+        self.service_endpoint = route.get('service_endpoint')
+        self.gateway_endpoint = route.get('gateway_endpoint')
+        self.allowed_methods = self.route.get('allowed_methods') or []
 
     def map_route(
         self,
@@ -29,11 +19,6 @@ class RouteMap:
         '''
         Map a proxy route to the gateway server
         as a route rule
-
-        Args:
-            app (_type_): gateway server app
-            proxy_request (_type_): the view
-            function to map to the endpoin
         '''
 
         app.add_url_rule(

@@ -1,3 +1,4 @@
+from domain.exceptions import RouteNotFoundException
 from services.endpoint_reference import ServiceEndpointReference
 from services.service_configuration import ServiceConfiguration
 from services.route_map import RouteMap
@@ -19,7 +20,7 @@ class ServiceMap:
         self.endpoint_reference = container.resolve(ServiceEndpointReference)
         self.service_name = service_name
         self.service_configuration = service
-        self.index = dict()
+        self.__mapping = dict()
         self.route_maps: List[RouteMap] = list()
 
     @property
@@ -40,9 +41,12 @@ class ServiceMap:
         self,
         key
     ):
-        if not key in self.index:
-            raise Exception(f'No route exists for requested value {key}')
-        return self.index[key]
+        if not key in self.__mapping:
+            raise RouteNotFoundException(
+                service=self.service_name,
+                route=key)
+
+        return self.__mapping[key]
 
     def __map_routes(
         self
@@ -71,7 +75,7 @@ class ServiceMap:
         index = dict()
         for route in self.route_maps:
             index[route.gateway_endpoint] = route
-        self.index = index
+        self.__mapping = index
 
     def build(
         self

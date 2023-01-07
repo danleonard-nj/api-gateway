@@ -1,13 +1,13 @@
 from dotenv import load_dotenv
-from framework.logger.providers import get_logger
-from quart import Quart
-from routes.health import health_bp
-from utilities.provider import ContainerProvider
 from framework.abstractions.abstract_request import RequestContextProvider
 from framework.di.static_provider import InternalProvider
+from framework.logger.providers import get_logger
 from framework.serialization.serializer import configure_serializer
+from quart import Quart
 
+from routes.health import health_bp
 from services.gateway import ApiGateway
+from utilities.provider import ContainerProvider
 
 load_dotenv()
 

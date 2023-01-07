@@ -34,34 +34,7 @@ class ServiceConfiguration:
         self.service = service
         self.name = name
 
-    @property
-    def base_url(self):
-        _base_url = self.service.get('base_url')
-        return _base_url
-
-    @property
-    def port(self):
-        _port = self.service.get('port')
-        return _port
-
-    @property
-    def cors(self):
-        _cors = self.service.get('cors')
-        return ServiceCors(cors=_cors)
-
-    @property
-    def routing(self):
-        _routing = self.service.get('routing')
-        return _routing
-
-    @routing.setter
-    def routing(self):
-        raise NotImplementedError()
-
-    @port.setter
-    def port(self):
-        raise NotImplementedError()
-
-    @base_url.setter
-    def base_url(self):
-        raise NotImplementedError()
+        self.base_url = service.get('base_url')
+        self.port = self.service.get('port')
+        self.cors = self.service.get('cors')
+        self.routing = self.service.get('routing')

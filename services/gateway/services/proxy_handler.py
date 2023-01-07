@@ -1,20 +1,24 @@
+import asyncio
 import traceback
 from typing import Dict
 
-import httpx
 from framework.clients.cache_client import CacheClientAsync
-from framework.clients.http_client import HttpClient
 from framework.crypto.hashing import md5
 from framework.di.service_provider import ServiceProvider
 from framework.exceptions.nulls import ArgumentNullException
 from framework.logger.providers import get_logger
 from framework.uri.uri import Uri
+from httpx import AsyncClient
 from quart import Response, request
 
-from services.route_map import RouteMap
+from domain.cache import CacheKey
 from services.service_map import ServiceMap
 
 logger = get_logger(__name__)
+
+
+def fire_task(func):
+    asyncio.create_task(func)
 
 
 class ProxyHandler:
@@ -23,20 +27,13 @@ class ProxyHandler:
         service_provider: ServiceProvider,
         service: ServiceMap
     ):
+        self.__provider = service_provider
+
         self.__service = service
         self.__configuration = service.service_configuration
 
-        self.__http_client = HttpClient()
         self.__cache_client = service_provider.resolve(
             CacheClientAsync)
-
-    def __get_rule(
-        self
-    ):
-        rule = request.url_rule.rule
-        if not rule:
-            raise Exception('No Werkzeug mapped rule')
-        return rule
 
     def __parse_interpolated_segments(
         self,
@@ -52,6 +49,7 @@ class ProxyHandler:
             interp_url = interp_url.replace(
                 repl,
                 segments[segment])
+
         return interp_url
 
     def __build_url(
@@ -64,40 +62,49 @@ class ProxyHandler:
         route_uri = Uri(
             url=f'{self.__service.base_url}{url}')
 
+        # Handle query params
         if request.args:
+            logger.info(f'Query params: {request.args}')
             route_uri.query = dict(request.args)
 
+        # Handle non-standard port mapping
         if (self.__configuration.port
                 and self.__configuration.port != 0):
             route_uri.port = self.__configuration.port
 
+        # Build the proxy endpoint
         proxy_url = route_uri.get_url()
+
+        # Handle route segments
         if any(segments):
             proxy_url = self.__parse_interpolated_segments(
                 url=proxy_url,
                 segments=segments)
 
+        logger.info(f'Proxy: {proxy_url}')
+
         return proxy_url
 
-    async def make_request(
+    async def __send_request(
         self,
         url: str
     ):
-        data = await request.get_data()
+        logger.info(f'Handling request: {request.method}: {url}')
+        logger.info(f'Remote: {request.remote_addr}')
+        logger.info(f'Service endpoint: {url}')
 
-        if data:
-            response = await self.__http_client.request(
-                method=request.method,
-                url=url,
-                data=data,
-                headers=request.headers,
-                timeout=None)
-        else:
-            response = await self.__http_client.request(
-                method=request.method,
-                url=url,
-                headers=request.headers,
-                timeout=None)
+        client = self.__provider.resolve(
+            AsyncClient)
+
+        data = await request.get_data()
+        logger.info(f'Content bytes: {len(data)}')
+
+        response = await client.request(
+            method=request.method,
+            url=url,
+            data=data,
+            headers=request.headers,
+            timeout=None)
 
         logger.info(
             f'Request: {response.request.method}: {response.request.url}')
@@ -106,25 +113,18 @@ class ProxyHandler:
         logger.info(f'Service: {response.elapsed} elapsed')
         return response
 
-    def __request_hash_key(
-        self,
-        ingress_path: str,
-        kwargs: Dict
-    ):
-        ArgumentNullException.if_none_or_whitespace(
-            ingress_path, 'ingress_path')
-
-        return md5(f'{ingress_path}{kwargs}')
-
     async def __get_cache(
         self,
         hash_key: str
     ) -> str:
         ArgumentNullException.if_none_or_whitespace(hash_key, 'hash_key')
 
-        cached_route = await self.__cache_client.get_cache(
-            key=hash_key)
-        return cached_route
+        try:
+            cached_route = await self.__cache_client.get_cache(
+                key=hash_key)
+            return cached_route
+        except Exception as ex:
+            logger.warning(f'Failed to get cache: {ex}')
 
     async def __set_cache(
         self,
@@ -135,12 +135,15 @@ class ProxyHandler:
         ArgumentNullException.if_none_or_whitespace(
             service_route, 'service_route')
 
-        await self.__cache_client.set_cache(
-            key=hash_key,
-            value=service_route,
-            ttl=60 * 24)
+        try:
+            await self.__cache_client.set_cache(
+                key=hash_key,
+                value=service_route,
+                ttl=60 * 24)
+        except Exception as ex:
+            logger.warning(f'Failed to get cache: {ex}')
 
-    def __get_segments(
+    def __get_segments_from_kwargs(
         self,
         kwargs: Dict
     ):
@@ -149,48 +152,67 @@ class ProxyHandler:
             if k != 'container'
         }
 
+    async def __get_service_route(
+        self,
+        ingress_route: str,
+        route_params: Dict
+    ):
+        # Create cache key for ingress route
+        cache_key = CacheKey.mapped_route(
+            ingress_path=ingress_route,
+            kwargs=route_params)
+
+        logger.info(f'Route cache key: {cache_key}')
+
+        cached_route = await self.__get_cache(
+            hash_key=cache_key)
+
+        if cached_route is not None:
+            logger.info(f'Using cached route: {cached_route}')
+            return cached_route
+
+        # Get the route mapping definition
+        route_mapping = self.__service[ingress_route]
+        logger.info(f'Service: {route_mapping.service_endpoint}')
+
+        # Fire and forget the write to cache
+        fire_task(self.__set_cache(
+            hash_key=cache_key,
+            service_route=route_mapping.service_endpoint))
+
+        return route_mapping.service_endpoint
+
     async def handle_request(
         self,
         **kwargs
     ):
-        ingress_route = self.__get_rule()
+        # Get the inbound request rule
+        ingress_route = request.url_rule.rule
 
-        hash_key = self.__request_hash_key(
-            ingress_path=ingress_route,
-            kwargs=kwargs)
-
-        cached_route = await self.__get_cache(
-            hash_key=hash_key)
-
-        if not cached_route:
-            logger.info('No cached endpoint, fetching from route map')
-
-            route: RouteMap = self.__service[ingress_route]
-            service_route = route.service_endpoint
-
-            await self.__set_cache(
-                hash_key=hash_key,
-                service_route=route.service_endpoint)
-        else:
-            service_route = cached_route
-            logger.info('Endpoint returned from cache')
+        service_route = await self.__get_service_route(
+            ingress_route=ingress_route,
+            route_params=kwargs)
 
         service_url = self.__build_url(
             url=service_route,
-            segments=self.__get_segments(
+            segments=self.__get_segments_from_kwargs(
                 kwargs=kwargs
             ))
 
-        response: httpx.Response = await self.make_request(
+        service_response = await self.__send_request(
             url=service_url)
 
-        _response = Response(
-            response=response.content,
-            status=response.status_code,
-            headers=dict(response.headers))
+        # Forward sender address
+        headers = dict(service_response.headers)
+        headers['X-Remote-Address'] = request.remote_addr
 
-        logger.info(f'Response: {_response._status}')
-        return _response
+        gateway_response = Response(
+            response=service_response.content,
+            status=service_response.status_code,
+            headers=dict(service_response.headers))
+
+        logger.info(f'Response: {gateway_response._status}')
+        return gateway_response
 
     async def proxy(
         self,
@@ -213,6 +235,7 @@ class ProxyHandler:
 
         logger.info(f'{request.method}: {request.url_rule}')
 
+        # Apply defined CORS rules
         request.gateway_cors = self.__configuration.cors
         status_code = None
 

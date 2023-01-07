@@ -147,3 +147,4 @@ config.local.json
 git-*
 **/__pycache__
 **/.vscode
+*.bat
