@@ -28,6 +28,11 @@
           "gateway_endpoint": "/api/feature/evaluate/<feature_key>",
           "service_endpoint": "/api/feature/evaluate/<feature_key>",
           "allowed_methods": ["GET", "PUT"]
+        },
+        {
+          "gateway_endpoint": "/api/feature/events/evaluate",
+          "service_endpoint": "/api/events/evaluate",
+          "allowed_methods": ["POST"]
         }
       ]
     }
