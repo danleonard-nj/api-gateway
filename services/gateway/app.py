@@ -3,6 +3,7 @@ from framework.abstractions.abstract_request import RequestContextProvider
 from framework.di.static_provider import InternalProvider
 from framework.logger.providers import get_logger
 from framework.serialization.serializer import configure_serializer
+from framework.swagger.quart.swagger import Swagger
 from quart import Quart
 
 from routes.health import health_bp
@@ -26,6 +27,12 @@ proxy.configure(app=app)
 proxy.build_maps()
 
 app.register_blueprint(health_bp)
+
+swagger = Swagger(
+    app=app,
+    title='Gateway')
+
+swagger.configure()
 
 
 @app.before_serving
