@@ -38,7 +38,7 @@
       ]
     },
     "reverb_gateway_api": {
-      "base_url": "http://reverb-gateway.gateway.svc.cluster.local",
+      "base_url": "http://reverb-gateway.kube-tools.svc.cluster.local",
       "probes": ["/api/health/alive", "/api/health/ready"],
       "routing": [
         {
