@@ -215,6 +215,11 @@
           "gateway_endpoint": "/api/tools/health/dms/switch/poll",
           "service_endpoint": "/api/health/dms/switch/poll",
           "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/tools/google/gmail/rule",
+          "service_endpoint": "/api/google/gmail/rule",
+          "allowed_methods": ["POST", "GET"]
         }
       ]
     },
