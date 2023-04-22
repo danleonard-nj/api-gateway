@@ -219,7 +219,12 @@
         {
           "gateway_endpoint": "/api/tools/google/gmail/rule",
           "service_endpoint": "/api/google/gmail/rule",
-          "allowed_methods": ["POST", "GET"]
+          "allowed_methods": ["POST", "PUT", "GET"]
+        },
+        {
+          "gateway_endpoint": "/api/tools/google/gmail/rule/<rule_id>",
+          "service_endpoint": "/api/google/gmail/rule/<rule_id>",
+          "allowed_methods": ["GET", "DELETE"]
         }
       ]
     },
