@@ -225,6 +225,21 @@
           "gateway_endpoint": "/api/tools/google/gmail/rule/<rule_id>",
           "service_endpoint": "/api/google/gmail/rule/<rule_id>",
           "allowed_methods": ["GET", "DELETE"]
+        },
+        {
+          "gateway_endpoint": "/api/tools/nest/auth",
+          "service_endpoint": "/api/nest/auth",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/tools/nest/thermostat",
+          "service_endpoint": "/api/nest/thermostat",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/tools/nest/sensor",
+          "service_endpoint": "/api/nest/sensor",
+          "allowed_methods": ["POST"]
         }
       ]
     },
