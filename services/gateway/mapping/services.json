@@ -242,13 +242,28 @@
           "allowed_methods": ["POST"]
         },
         {
+          "gateway_endpoint": "/api/tools/chatgpt/chat/completions",
+          "service_endpoint": "/api/chatgpt/chat/completions",
+          "allowed_methods": ["POST"]
+        },
+        {
           "gateway_endpoint": "/api/tools/chatgpt/images/generations",
           "service_endpoint": "/api/chatgpt/images/generations",
           "allowed_methods": ["POST"]
         },
         {
+          "gateway_endpoint": "/api/tools/chatgpt/images/edits",
+          "service_endpoint": "/api/chatgpt/images/edits",
+          "allowed_methods": ["POST"]
+        },
+        {
           "gateway_endpoint": "/api/tools/chatgpt/engines",
           "service_endpoint": "/api/chatgpt/engines",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/tools/chatgpt/models",
+          "service_endpoint": "/api/chatgpt/models",
           "allowed_methods": ["GET"]
         },
         {
