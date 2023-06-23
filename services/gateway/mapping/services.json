@@ -285,6 +285,11 @@
           "gateway_endpoint": "/api/tools/google/auth",
           "service_endpoint": "/api/google/auth",
           "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/tools/logs/events",
+          "service_endpoint": "/api/logs/events",
+          "allowed_methods": ["GET"]
         }
       ]
     },
