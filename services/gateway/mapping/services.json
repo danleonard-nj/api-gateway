@@ -290,6 +290,11 @@
           "gateway_endpoint": "/api/tools/logs/events",
           "service_endpoint": "/api/logs/events",
           "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/tools/pfsense/log",
+          "service_endpoint": "/api/pfsense/log",
+          "allowed_methods": ["POST"]
         }
       ]
     },
