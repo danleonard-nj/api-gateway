@@ -294,7 +294,7 @@
         {
           "gateway_endpoint": "/api/tools/pfsense/log",
           "service_endpoint": "/api/pfsense/log",
-          "allowed_methods": ["POST"]
+          "allowed_methods": ["POST", "GET"]
         }
       ]
     },
@@ -336,6 +336,57 @@
           "gateway_endpoint": "/api/scheduler/history",
           "service_endpoint": "/api/History",
           "allowed_methods": ["GET"]
+        }
+      ]
+    },
+    "nest_api": {
+      "base_url": "http://nest.kube-tools.svc.cluster.local",
+      "port": 80,
+      "routing": [
+        {
+          "gateway_endpoint": "/api/nest/auth",
+          "service_endpoint": "/api/nest/auth",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/nest/thermostat",
+          "service_endpoint": "/api/nest/thermostat",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/nest/sensor",
+          "service_endpoint": "/api/nest/sensor",
+          "allowed_methods": ["POST", "GET"]
+        },
+        {
+          "gateway_endpoint": "/api/nest/sensor/grouped",
+          "service_endpoint": "/api/nest/sensor/grouped",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/nest/sensor/purge",
+          "service_endpoint": "/api/nest/sensor/purge",
+          "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/nest/sensor/info",
+          "service_endpoint": "/api/nest/sensor/info",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/nest/sensor/log",
+          "service_endpoint": "/api/nest/sensor/log",
+          "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/nest/sensor/info/poll",
+          "service_endpoint": "/api/nest/sensor/info/poll",
+          "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/nest/command",
+          "service_endpoint": "/api/nest/command",
+          "allowed_methods": ["POST", "GET"]
         }
       ]
     }

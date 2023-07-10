@@ -11,6 +11,17 @@
         }
       ]
     },
+    "pfsense_gateway_api": {
+      "base_url": "http://pfsense-gateway-api.gateway.svc.cluster.local",
+      "probes": ["/api/health/alive", "/api/health/ready"],
+      "routing": [
+        {
+          "gateway_endpoint": "/api/pfsense/log",
+          "service_endpoint": "/api/pfsense/log",
+          "allowed_methods": ["POST"]
+        }
+      ]
+    },
     "email_gateway_api": {
       "base_url": "http://email-gateway.gateway.svc.cluster.local",
       "probes": ["/api/health/alive", "/api/health/ready"],
