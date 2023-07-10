@@ -16,7 +16,7 @@
       "probes": ["/api/health/alive", "/api/health/ready"],
       "routing": [
         {
-          "gateway_endpoint": "/api/pfsense/log",
+          "gateway_endpoint": "/api/tools/pfsense/log",
           "service_endpoint": "/api/pfsense/log",
           "allowed_methods": ["POST"]
         }
