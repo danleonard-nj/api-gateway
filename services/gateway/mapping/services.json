@@ -251,6 +251,16 @@
           "gateway_endpoint": "/api/tools/logs/events",
           "service_endpoint": "/api/logs/events",
           "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/tools/bank/balances/<key>",
+          "service_endpoint": "/api/bank/balances/<key>",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/tools/bank/balances",
+          "service_endpoint": "/api/bank/balances",
+          "allowed_methods": ["GET"]
         }
       ]
     },
