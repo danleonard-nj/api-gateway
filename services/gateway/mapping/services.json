@@ -162,57 +162,6 @@
         }
       ]
     },
-    "kube_tools_api": {
-      "base_url": "http://kube-tools.kube-tools.svc.cluster.local",
-      "port": 80,
-      "routing": [
-        {
-          "gateway_endpoint": "/api/tools/location/history/query",
-          "service_endpoint": "/api/location/history/query",
-          "allowed_methods": ["POST"]
-        },
-        {
-          "gateway_endpoint": "/api/tools/wr/response",
-          "service_endpoint": "/api/wr/response",
-          "allowed_methods": ["POST"]
-        },
-        {
-          "gateway_endpoint": "/api/tools/webhooks/sms",
-          "service_endpoint": "/api/webhooks/sms",
-          "allowed_methods": ["POST"]
-        },
-        {
-          "gateway_endpoint": "/api/tools/google/gmail/rule",
-          "service_endpoint": "/api/google/gmail/rule",
-          "allowed_methods": ["POST", "PUT", "GET"]
-        },
-        {
-          "gateway_endpoint": "/api/tools/google/gmail/rule/<rule_id>",
-          "service_endpoint": "/api/google/gmail/rule/<rule_id>",
-          "allowed_methods": ["GET", "DELETE"]
-        },
-        {
-          "gateway_endpoint": "/api/tools/google/auth",
-          "service_endpoint": "/api/google/auth",
-          "allowed_methods": ["POST"]
-        },
-        {
-          "gateway_endpoint": "/api/tools/logs/events",
-          "service_endpoint": "/api/logs/events",
-          "allowed_methods": ["GET"]
-        },
-        {
-          "gateway_endpoint": "/api/tools/bank/balances/<key>",
-          "service_endpoint": "/api/bank/balances/<key>",
-          "allowed_methods": ["GET"]
-        },
-        {
-          "gateway_endpoint": "/api/tools/bank/balances",
-          "service_endpoint": "/api/bank/balances",
-          "allowed_methods": ["GET"]
-        }
-      ]
-    },
     "net_scheduler_api": {
       "base_url": "http://net-scheduler.kube-tools.svc.cluster.local",
       "port": "80",
