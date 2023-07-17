@@ -2,16 +2,15 @@ import json
 import os
 
 from framework.configuration.configuration import Configuration
+from framework.di.service_provider import ServiceProvider
+from framework.exceptions.nulls import ArgumentNullException
 from framework.logger.providers import get_logger
 from framework.validators.nulls import not_none
-from framework.exceptions.nulls import ArgumentNullException
-from framework.di.service_provider import ServiceProvider
 
 from services.gateway_map import GatewayMap
 from services.proxy_handler import ProxyHandler
 from services.service_configuration import ServiceConfiguration
 from services.service_map import ServiceMap
-
 
 logger = get_logger(__name__)
 

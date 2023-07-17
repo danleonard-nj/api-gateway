@@ -53,6 +53,11 @@
           "gateway_endpoint": "/api/tools/weather",
           "service_endpoint": "/api/weather",
           "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/tools/weather/forecast",
+          "service_endpoint": "/api/weather/forecast",
+          "allowed_methods": ["GET"]
         }
       ]
     }
