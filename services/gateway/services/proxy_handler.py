@@ -9,6 +9,7 @@ from framework.di.service_provider import ServiceProvider
 from framework.exceptions.nulls import ArgumentNullException
 from framework.logger.providers import get_logger
 from framework.uri.uri import Uri
+from quart import make_response
 from httpx import AsyncClient
 from quart import Response, request
 
@@ -205,14 +206,19 @@ class ProxyHandler:
             url=service_url)
 
         # Forward sender address
-        headers = dict(service_response.headers)
-        headers['X-Remote-Address'] = request.remote_addr
-        headers['X-Timestamp'] = str(timestamp)
+        headers = service_response.headers
 
         gateway_response = Response(
             response=service_response.content,
             status=service_response.status_code,
             headers=headers)
+
+        gateway_response.headers.add(
+            'X-Forwarded-For', request.remote_addr)
+        gateway_response.headers.add(
+            'X-Forwarded-Endpoint', request.url_rule.endpoint)
+        gateway_response.headers.add(
+            'X-Timestamp', str(timestamp))
 
         logger.info(f'Response: {gateway_response._status}')
         return gateway_response
@@ -240,7 +246,6 @@ class ProxyHandler:
 
         # Apply defined CORS rules
         request.gateway_cors = self.__configuration.cors
-        status_code = None
 
         try:
             return await self.handle_request(**kwargs)
@@ -249,4 +254,4 @@ class ProxyHandler:
                 'error': str(ex),
                 'traceback': traceback.format_exc(),
                 'type': str(type(ex))
-            }, (status_code or 500)
+            }, 500
