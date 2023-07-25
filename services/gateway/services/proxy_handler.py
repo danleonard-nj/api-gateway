@@ -1,4 +1,5 @@
 import asyncio
+import time
 import traceback
 from typing import Dict
 
@@ -188,6 +189,7 @@ class ProxyHandler:
     ):
         # Get the inbound request rule
         ingress_route = request.url_rule.rule
+        timestamp = int(time.time())
 
         service_route = await self.__get_service_route(
             ingress_route=ingress_route,
@@ -205,11 +207,12 @@ class ProxyHandler:
         # Forward sender address
         headers = dict(service_response.headers)
         headers['X-Remote-Address'] = request.remote_addr
+        headers['X-Timestamp'] = str(timestamp)
 
         gateway_response = Response(
             response=service_response.content,
             status=service_response.status_code,
-            headers=dict(service_response.headers))
+            headers=headers)
 
         logger.info(f'Response: {gateway_response._status}')
         return gateway_response

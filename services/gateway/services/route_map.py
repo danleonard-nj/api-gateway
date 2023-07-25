@@ -3,7 +3,10 @@ from typing import Any, Callable
 
 
 class RouteMap:
-    def __init__(self, route: dict):
+    def __init__(
+        self,
+        route: dict
+    ):
         self.route = route
         self.endpoint_id = str(uuid.uuid4())
 
@@ -21,6 +24,7 @@ class RouteMap:
         as a route rule
         '''
 
+        # Map the route to the Quart app
         app.add_url_rule(
             rule=self.gateway_endpoint,
             endpoint=self.endpoint_id,
