@@ -1,0 +1,60 @@
+{
+  "services": {
+    "nest_api": {
+      "base_url": "http://nest.kube-tools.svc.cluster.local",
+      "port": 80,
+      "routing": [
+        {
+          "gateway_endpoint": "/api/tools/nest/auth",
+          "service_endpoint": "/api/auth",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/tools/nest/thermostat",
+          "service_endpoint": "/api/thermostat",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/tools/nest/sensor",
+          "service_endpoint": "/api/sensor",
+          "allowed_methods": ["POST", "GET"]
+        },
+        {
+          "gateway_endpoint": "/api/tools/nest/sensor/grouped",
+          "service_endpoint": "/api/sensor/grouped",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/tools/nest/sensor/purge",
+          "service_endpoint": "/api/sensor/purge",
+          "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/tools/nest/sensor/info",
+          "service_endpoint": "/api/sensor/info",
+          "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/tools/nest/sensor/log",
+          "service_endpoint": "/api/sensor/log",
+          "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/tools/nest/sensor/info/poll",
+          "service_endpoint": "/api/sensor/info/poll",
+          "allowed_methods": ["POST"]
+        },
+        {
+          "gateway_endpoint": "/api/tools/nest/command",
+          "service_endpoint": "/api/command",
+          "allowed_methods": ["POST", "GET"]
+        },
+        {
+          "gateway_endpoint": "/api/tools/nest/integration/events",
+          "service_endpoint": "/api/integration/events",
+          "allowed_methods": ["GET"]
+        }
+      ]
+    }
+  }
+}
