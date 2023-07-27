@@ -50,11 +50,6 @@
           "allowed_methods": ["GET"]
         },
         {
-          "gateway_endpoint": "/api/tools/bank/webhook",
-          "service_endpoint": "/api/bank/webhook",
-          "allowed_methods": ["POST"]
-        },
-        {
           "gateway_endpoint": "/api/tools/weather",
           "service_endpoint": "/api/weather",
           "allowed_methods": ["GET"]
