@@ -53,6 +53,11 @@
           "gateway_endpoint": "/api/tools/nest/integration/events",
           "service_endpoint": "/api/integration/events",
           "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/tools/vesting",
+          "service_endpoint": "/api/vesting",
+          "allowed_methods": ["GET"]
         }
       ]
     }
