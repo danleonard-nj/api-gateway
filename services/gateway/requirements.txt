@@ -1,4 +1,4 @@
-framework==0.2.6
+framework==0.2.7
 azure-servicebus
 quart
 uvloop
