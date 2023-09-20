@@ -20,8 +20,8 @@
           "allowed_methods": ["POST", "GET"]
         },
         {
-          "gateway_endpoint": "/api/tools/nest/sensor/grouped",
-          "service_endpoint": "/api/sensor/grouped",
+          "gateway_endpoint": "/api/tools/nest/sensor/<sensor_id>",
+          "service_endpoint": "/api/sensor/<sensor_id>",
           "allowed_methods": ["GET"]
         },
         {
@@ -33,11 +33,6 @@
           "gateway_endpoint": "/api/tools/nest/sensor/info",
           "service_endpoint": "/api/sensor/info",
           "allowed_methods": ["GET"]
-        },
-        {
-          "gateway_endpoint": "/api/tools/nest/sensor/log",
-          "service_endpoint": "/api/sensor/log",
-          "allowed_methods": ["POST"]
         },
         {
           "gateway_endpoint": "/api/tools/nest/sensor/info/poll",
@@ -52,11 +47,6 @@
         {
           "gateway_endpoint": "/api/tools/nest/integration/events",
           "service_endpoint": "/api/integration/events",
-          "allowed_methods": ["GET"]
-        },
-        {
-          "gateway_endpoint": "/api/tools/vesting",
-          "service_endpoint": "/api/vesting",
           "allowed_methods": ["GET"]
         }
       ]
