@@ -48,6 +48,11 @@
           "gateway_endpoint": "/api/tools/nest/integration/events",
           "service_endpoint": "/api/integration/events",
           "allowed_methods": ["GET"]
+        },
+        {
+          "gateway_endpoint": "/api/tools/nest/thermostat/capture",
+          "service_endpoint": "/api/thermostat/capture",
+          "allowed_methods": ["GET"]
         }
       ]
     }
