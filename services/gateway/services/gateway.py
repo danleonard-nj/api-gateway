@@ -15,6 +15,13 @@ from services.service_map import ServiceMap
 logger = get_logger(__name__)
 
 
+class ApiGatewayConfigurationException(Exception):
+    def __init__(
+        self,
+        message: str
+    ):
+        super().__init__(message)
+
 class ApiGateway:
     def __init__(
         self,
@@ -54,7 +61,7 @@ class ApiGateway:
 
         for base_filename in os.listdir('mapping'):
             filename = f'./mapping/{base_filename}'
-            logger.info(f"Loadeding routes from config: {filename}")
+            logger.info(f"Loading routes from config: {filename}")
 
             config = self.__load_route_config_services(
                 filename=filename)
@@ -74,7 +81,10 @@ class ApiGateway:
         '''
 
         services = self.routing.get('services')
-        not_none(services, 'services')
+        
+        if services is None:
+            raise ApiGatewayConfigurationException(
+                'No services defined in routing configuration')
 
         logger.info('Building service maps')
         for service_key in services:
@@ -83,7 +93,10 @@ class ApiGateway:
                 service=services.get(service_key),
                 name=service_key)
 
-            not_none(self.__configuration, 'configuration')
+            if service_configuration is None:
+                raise ApiGatewayConfigurationException(
+                    f'No configuration found for service: {service_key}')
+            
             logger.info(f'Creating map for service: {service_key}')
 
             service_map = ServiceMap(

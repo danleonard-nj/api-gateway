@@ -188,16 +188,21 @@ class ProxyHandler:
     ):
         # Get the inbound request rule
         ingress_route = request.url_rule.rule
+        logger.info(f'Ingress route: {ingress_route}')
 
         service_route = await self.__get_service_route(
             ingress_route=ingress_route,
             route_params=kwargs)
+        
+        logger.info(f'Service route: {service_route}')
 
         service_url = self.__build_url(
             url=service_route,
             segments=self.__get_segments_from_kwargs(
                 kwargs=kwargs
             ))
+        
+        logger.info(f'Service URL: {service_url}')
 
         service_response = await self.__send_request(
             url=service_url)
@@ -211,7 +216,7 @@ class ProxyHandler:
             status=service_response.status_code,
             headers=dict(service_response.headers))
 
-        logger.info(f'Response: {gateway_response._status}')
+        logger.info(f'Response: {gateway_response.status_code}: {service_response.elapsed}')
         return gateway_response
 
     async def proxy(
