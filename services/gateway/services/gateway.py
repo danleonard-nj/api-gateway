@@ -5,7 +5,6 @@ from framework.configuration.configuration import Configuration
 from framework.di.service_provider import ServiceProvider
 from framework.exceptions.nulls import ArgumentNullException
 from framework.logger.providers import get_logger
-from framework.validators.nulls import not_none
 
 from services.gateway_map import GatewayMap
 from services.proxy_handler import ProxyHandler
@@ -21,6 +20,7 @@ class ApiGatewayConfigurationException(Exception):
         message: str
     ):
         super().__init__(message)
+
 
 class ApiGateway:
     def __init__(
@@ -40,11 +40,11 @@ class ApiGateway:
         '''
 
         self.app = app
-        self.routing = self.__compile_route_configs()
+        self.routing = self._gather_route_configs()
         self.gateway_map = GatewayMap()
         return self
 
-    def __load_route_config_services(
+    def _load_route_config_services(
         self,
         filename: str
     ):
@@ -54,7 +54,7 @@ class ApiGateway:
             config = json.loads(file.read())
             return config.get('services')
 
-    def __compile_route_configs(
+    def _gather_route_configs(
         self
     ):
         configs = dict()
@@ -63,7 +63,7 @@ class ApiGateway:
             filename = f'./mapping/{base_filename}'
             logger.info(f"Loading routes from config: {filename}")
 
-            config = self.__load_route_config_services(
+            config = self._load_route_config_services(
                 filename=filename)
 
             configs |= config
@@ -81,7 +81,7 @@ class ApiGateway:
         '''
 
         services = self.routing.get('services')
-        
+
         if services is None:
             raise ApiGatewayConfigurationException(
                 'No services defined in routing configuration')
@@ -96,7 +96,7 @@ class ApiGateway:
             if service_configuration is None:
                 raise ApiGatewayConfigurationException(
                     f'No configuration found for service: {service_key}')
-            
+
             logger.info(f'Creating map for service: {service_key}')
 
             service_map = ServiceMap(

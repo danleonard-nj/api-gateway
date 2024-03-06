@@ -2,16 +2,14 @@ import asyncio
 import traceback
 from typing import Dict
 
+from domain.cache import CacheKey
 from framework.clients.cache_client import CacheClientAsync
-from framework.crypto.hashing import md5
 from framework.di.service_provider import ServiceProvider
 from framework.exceptions.nulls import ArgumentNullException
 from framework.logger.providers import get_logger
 from framework.uri.uri import Uri
 from httpx import AsyncClient
 from quart import Response, request
-
-from domain.cache import CacheKey
 from services.service_map import ServiceMap
 
 logger = get_logger(__name__)
@@ -27,15 +25,15 @@ class ProxyHandler:
         service_provider: ServiceProvider,
         service: ServiceMap
     ):
-        self.__provider = service_provider
+        self._provider = service_provider
 
-        self.__service = service
-        self.__configuration = service.service_configuration
+        self._service = service
+        self._configuration = service.service_configuration
 
         self.__cache_client = service_provider.resolve(
             CacheClientAsync)
 
-    def __parse_interpolated_segments(
+    def _parse_interpolated_segments(
         self,
         url: str,
         segments: Dict
@@ -52,7 +50,7 @@ class ProxyHandler:
 
         return interp_url
 
-    def __build_url(
+    def _build_url(
         self,
         url: str,
         segments: Dict
@@ -60,7 +58,7 @@ class ProxyHandler:
         ArgumentNullException.if_none_or_whitespace('url', url)
 
         route_uri = Uri(
-            url=f'{self.__service.base_url}{url}')
+            url=f'{self._service.base_url}{url}')
 
         # Handle query params
         if request.args:
@@ -68,16 +66,16 @@ class ProxyHandler:
             route_uri.query = dict(request.args)
 
         # Handle non-standard port mapping
-        if (self.__configuration.port
-                and self.__configuration.port != 0):
-            route_uri.port = self.__configuration.port
+        if (self._configuration.port
+                and self._configuration.port != 0):
+            route_uri.port = self._configuration.port
 
         # Build the proxy endpoint
         proxy_url = route_uri.get_url()
 
         # Handle route segments
         if any(segments):
-            proxy_url = self.__parse_interpolated_segments(
+            proxy_url = self._parse_interpolated_segments(
                 url=proxy_url,
                 segments=segments)
 
@@ -85,7 +83,7 @@ class ProxyHandler:
 
         return proxy_url
 
-    async def __send_request(
+    async def _send_request(
         self,
         url: str
     ):
@@ -93,7 +91,7 @@ class ProxyHandler:
         logger.info(f'Remote: {request.remote_addr}')
         logger.info(f'Service endpoint: {url}')
 
-        client = self.__provider.resolve(
+        client = self._provider.resolve(
             AsyncClient)
 
         data = await request.get_data()
@@ -113,7 +111,7 @@ class ProxyHandler:
         logger.info(f'Service: {response.elapsed} elapsed')
         return response
 
-    async def __get_cache(
+    async def _get_cache(
         self,
         hash_key: str
     ) -> str:
@@ -126,7 +124,7 @@ class ProxyHandler:
         except Exception as ex:
             logger.warning(f'Failed to get cache: {ex}')
 
-    async def __set_cache(
+    async def _set_cache(
         self,
         hash_key: str,
         service_route: str
@@ -143,7 +141,7 @@ class ProxyHandler:
         except Exception as ex:
             logger.warning(f'Failed to get cache: {ex}')
 
-    def __get_segments_from_kwargs(
+    def _get_segments_from_kwargs(
         self,
         kwargs: Dict
     ):
@@ -152,7 +150,7 @@ class ProxyHandler:
             if k != 'container'
         }
 
-    async def __get_service_route(
+    async def _get_service_route(
         self,
         ingress_route: str,
         route_params: Dict
@@ -164,7 +162,7 @@ class ProxyHandler:
 
         logger.info(f'Route cache key: {cache_key}')
 
-        cached_route = await self.__get_cache(
+        cached_route = await self._get_cache(
             hash_key=cache_key)
 
         if cached_route is not None:
@@ -172,11 +170,11 @@ class ProxyHandler:
             return cached_route
 
         # Get the route mapping definition
-        route_mapping = self.__service[ingress_route]
+        route_mapping = self._service[ingress_route]
         logger.info(f'Service: {route_mapping.service_endpoint}')
 
         # Fire and forget the write to cache
-        fire_task(self.__set_cache(
+        fire_task(self._set_cache(
             hash_key=cache_key,
             service_route=route_mapping.service_endpoint))
 
@@ -190,21 +188,21 @@ class ProxyHandler:
         ingress_route = request.url_rule.rule
         logger.info(f'Ingress route: {ingress_route}')
 
-        service_route = await self.__get_service_route(
+        service_route = await self._get_service_route(
             ingress_route=ingress_route,
             route_params=kwargs)
-        
+
         logger.info(f'Service route: {service_route}')
 
-        service_url = self.__build_url(
+        service_url = self._build_url(
             url=service_route,
-            segments=self.__get_segments_from_kwargs(
+            segments=self._get_segments_from_kwargs(
                 kwargs=kwargs
             ))
-        
+
         logger.info(f'Service URL: {service_url}')
 
-        service_response = await self.__send_request(
+        service_response = await self._send_request(
             url=service_url)
 
         # Forward sender address
@@ -216,7 +214,8 @@ class ProxyHandler:
             status=service_response.status_code,
             headers=dict(service_response.headers))
 
-        logger.info(f'Response: {gateway_response.status_code}: {service_response.elapsed}')
+        logger.info(f'Response: {gateway_response.status_code}: {
+                    service_response.elapsed}')
         return gateway_response
 
     async def proxy(
@@ -241,7 +240,7 @@ class ProxyHandler:
         logger.info(f'{request.method}: {request.url_rule}')
 
         # Apply defined CORS rules
-        request.gateway_cors = self.__configuration.cors
+        request.gateway_cors = self._configuration.cors
         status_code = None
 
         try:

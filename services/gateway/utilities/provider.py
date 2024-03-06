@@ -3,7 +3,6 @@ from framework.configuration.configuration import Configuration
 from framework.di.service_collection import ServiceCollection
 from framework.di.static_provider import ProviderBase
 from httpx import AsyncClient
-
 from services.endpoint_reference import ServiceEndpointReference
 
 
