@@ -15,9 +15,8 @@ load_dotenv()
 app = Quart(__name__)
 logger = get_logger(__name__)
 
-
-ContainerProvider.initialize_provider()
-InternalProvider.bind(ContainerProvider.get_service_provider())
+provider = ContainerProvider.get_service_provider()
+InternalProvider.bind(provider)
 
 
 container = ContainerProvider.get_service_provider()

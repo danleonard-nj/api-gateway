@@ -214,8 +214,9 @@ class ProxyHandler:
             status=service_response.status_code,
             headers=dict(service_response.headers))
 
-        logger.info(f'Response: {gateway_response.status_code}: {
-                    service_response.elapsed}')
+        logger.info(
+            f'Response: {gateway_response.status_code}: {service_response.elapsed}')
+
         return gateway_response
 
     async def proxy(
