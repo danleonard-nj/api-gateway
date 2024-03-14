@@ -113,11 +113,23 @@
           ]
         },
         {
-          "gateway_endpoint": "/api/tools/redis/keys/<key>",
-          "service_endpoint": "/api/redis/keys/<key>",
+          "gateway_endpoint": "/api/tools/redis/get",
+          "service_endpoint": "/api/redis/get",
           "allowed_methods": [
-            "GET",
-            "DELETE",
+            "POST"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/redis/set",
+          "service_endpoint": "/api/redis/set",
+          "allowed_methods": [
+            "POST"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/redis/delete",
+          "service_endpoint": "/api/redis/delete",
+          "allowed_methods": [
             "POST"
           ]
         },
