@@ -19,13 +19,6 @@
           ]
         },
         {
-          "gateway_endpoint": "/api/tools/wr/response",
-          "service_endpoint": "/api/wr/response",
-          "allowed_methods": [
-            "POST"
-          ]
-        },
-        {
           "gateway_endpoint": "/api/tools/google/gmail/rule",
           "service_endpoint": "/api/google/gmail/rule",
           "allowed_methods": [
@@ -113,22 +106,31 @@
           ]
         },
         {
-          "gateway_endpoint": "/api/tools/dms/poll",
-          "service_endpoint": "/api/dms/poll",
+          "gateway_endpoint": "/api/tools/redis/keys",
+          "service_endpoint": "/api/redis/keys",
+          "allowed_methods": [
+            "GET"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/redis/keys/<key>",
+          "service_endpoint": "/api/redis/keys/<key>",
+          "allowed_methods": [
+            "GET",
+            "DELETE",
+            "POST"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/redis/flush",
+          "service_endpoint": "/api/redis/flush",
           "allowed_methods": [
             "POST"
           ]
         },
         {
-          "gateway_endpoint": "/api/tools/dms/disarm",
-          "service_endpoint": "/api/dms/disarm",
-          "allowed_methods": [
-            "POST"
-          ]
-        },
-        {
-          "gateway_endpoint": "/api/tools/dms/history",
-          "service_endpoint": "/api/dms/history",
+          "gateway_endpoint": "/api/tools/redis/diagnostics",
+          "service_endpoint": "/api/redis/diagnostics",
           "allowed_methods": [
             "GET"
           ]
