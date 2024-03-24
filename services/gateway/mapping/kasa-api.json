@@ -108,7 +108,7 @@
         },
         {
           "gateway_endpoint": "/api/kasa/device/logs",
-          "service_endpoint": "/api/device/<id>/logs",
+          "service_endpoint": "/api/device/logs",
           "allowed_methods": [
             "GET"
           ]
