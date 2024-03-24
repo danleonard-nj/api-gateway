@@ -2,37 +2,56 @@
   "services": {
     "features_gateway": {
       "base_url": "http://feature-api.kube-tools.svc.cluster.local",
-      "probes": ["/api/health/alive", "/api/health/ready"],
+      "probes": [
+        "/api/health/alive",
+        "/api/health/ready"
+      ],
       "routing": [
         {
           "gateway_endpoint": "/api/feature/id/<feature_id>",
           "service_endpoint": "/api/feature/id/<feature_id>",
-          "allowed_methods": ["DELETE", "GET"]
+          "allowed_methods": [
+            "DELETE",
+            "GET"
+          ]
         },
         {
           "gateway_endpoint": "/api/feature/key/<feature_key>",
           "service_endpoint": "/api/feature/key/<feature_key>",
-          "allowed_methods": ["GET"]
+          "allowed_methods": [
+            "GET"
+          ]
         },
         {
           "gateway_endpoint": "/api/feature/name/<feature_name>",
           "service_endpoint": "/api/feature/name/<feature_name>",
-          "allowed_methods": ["POST"]
+          "allowed_methods": [
+            "POST"
+          ]
         },
         {
           "gateway_endpoint": "/api/feature",
           "service_endpoint": "/api/feature",
-          "allowed_methods": ["POST", "PUT", "GET"]
+          "allowed_methods": [
+            "POST",
+            "PUT",
+            "GET"
+          ]
         },
         {
           "gateway_endpoint": "/api/feature/evaluate/<feature_key>",
           "service_endpoint": "/api/feature/evaluate/<feature_key>",
-          "allowed_methods": ["GET", "PUT"]
+          "allowed_methods": [
+            "GET",
+            "PUT"
+          ]
         },
         {
           "gateway_endpoint": "/api/feature/events/evaluate",
           "service_endpoint": "/api/events/evaluate",
-          "allowed_methods": ["POST"]
+          "allowed_methods": [
+            "POST"
+          ]
         }
       ]
     }

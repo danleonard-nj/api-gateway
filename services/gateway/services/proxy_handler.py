@@ -30,7 +30,7 @@ class ProxyHandler:
         self._service = service
         self._configuration = service.service_configuration
 
-        self.__cache_client = service_provider.resolve(
+        self._cache_client = service_provider.resolve(
             CacheClientAsync)
 
     def _parse_interpolated_segments(
@@ -118,7 +118,7 @@ class ProxyHandler:
         ArgumentNullException.if_none_or_whitespace(hash_key, 'hash_key')
 
         try:
-            cached_route = await self.__cache_client.get_cache(
+            cached_route = await self._cache_client.get_cache(
                 key=hash_key)
             return cached_route
         except Exception as ex:
@@ -134,7 +134,7 @@ class ProxyHandler:
             service_route, 'service_route')
 
         try:
-            await self.__cache_client.set_cache(
+            await self._cache_client.set_cache(
                 key=hash_key,
                 value=service_route,
                 ttl=60 * 24)

@@ -7,67 +7,111 @@
         {
           "gateway_endpoint": "/api/kasa/device/<id>",
           "service_endpoint": "/api/device/<id>",
-          "allowed_methods": ["GET", "DELETE"]
+          "allowed_methods": [
+            "GET",
+            "DELETE"
+          ]
         },
         {
           "gateway_endpoint": "/api/kasa/device",
           "service_endpoint": "/api/device",
-          "allowed_methods": ["GET", "POST", "PUT"]
+          "allowed_methods": [
+            "GET",
+            "POST",
+            "PUT"
+          ]
         },
         {
           "gateway_endpoint": "/api/kasa/device/sync",
           "service_endpoint": "/api/device/sync",
-          "allowed_methods": ["POST"]
+          "allowed_methods": [
+            "POST"
+          ]
         },
         {
           "gateway_endpoint": "/api/kasa/device/<device_id>/region/<region_id>",
           "service_endpoint": "/api/device/<device_id>/region/<region_id>",
-          "allowed_methods": ["POST"]
+          "allowed_methods": [
+            "POST"
+          ]
         },
         {
           "gateway_endpoint": "/api/kasa/scene",
           "service_endpoint": "/api/scene",
-          "allowed_methods": ["GET", "POST", "PUT"]
+          "allowed_methods": [
+            "GET",
+            "POST",
+            "PUT"
+          ]
         },
         {
           "gateway_endpoint": "/api/kasa/scene/<id>",
           "service_endpoint": "/api/scene/<id>",
-          "allowed_methods": ["GET", "DELETE"]
+          "allowed_methods": [
+            "GET",
+            "DELETE"
+          ]
         },
         {
           "gateway_endpoint": "/api/kasa/scene/<id>/run",
           "service_endpoint": "/api/scene/<id>/run",
-          "allowed_methods": ["POST"]
+          "allowed_methods": [
+            "POST"
+          ]
         },
         {
           "gateway_endpoint": "/api/kasa/preset",
           "service_endpoint": "/api/preset",
-          "allowed_methods": ["GET", "POST", "PUT"]
+          "allowed_methods": [
+            "GET",
+            "POST",
+            "PUT"
+          ]
         },
         {
           "gateway_endpoint": "/api/kasa/preset/<id>",
           "service_endpoint": "/api/preset/<id>",
-          "allowed_methods": ["GET", "DELETE"]
+          "allowed_methods": [
+            "GET",
+            "DELETE"
+          ]
         },
         {
           "gateway_endpoint": "/api/kasa/region",
           "service_endpoint": "/api/region",
-          "allowed_methods": ["GET", "POST"]
+          "allowed_methods": [
+            "GET",
+            "POST"
+          ]
         },
         {
           "gateway_endpoint": "/api/kasa/scene/category",
           "service_endpoint": "/api/scene/category",
-          "allowed_methods": ["GET", "POST"]
+          "allowed_methods": [
+            "GET",
+            "POST"
+          ]
         },
         {
           "gateway_endpoint": "/api/kasa/scene/category/<id>",
           "service_endpoint": "/api/scene/category/<id>",
-          "allowed_methods": ["DELETE"]
+          "allowed_methods": [
+            "DELETE"
+          ]
         },
         {
           "gateway_endpoint": "/api/kasa/device/<id>/response",
           "service_endpoint": "/api/device/<id>/response",
-          "allowed_methods": ["GET"]
+          "allowed_methods": [
+            "GET"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/kasa/device/logs",
+          "service_endpoint": "/api/device/<id>/logs",
+          "allowed_methods": [
+            "GET"
+          ]
         }
       ]
     }
