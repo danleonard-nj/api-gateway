@@ -1,4 +1,3 @@
-import asyncio
 import traceback
 from typing import Dict
 
@@ -11,24 +10,21 @@ from framework.uri.uri import Uri
 from httpx import AsyncClient
 from quart import Response, request
 from services.service_map import ServiceMap
+from utilities.utils import fire_task
 
 logger = get_logger(__name__)
-
-
-def fire_task(func):
-    asyncio.create_task(func)
 
 
 class ProxyHandler:
     def __init__(
         self,
         service_provider: ServiceProvider,
-        service: ServiceMap
+        service_map: ServiceMap
     ):
         self._provider = service_provider
 
-        self._service = service
-        self._configuration = service.service_configuration
+        self._service_map = service_map
+        self._configuration = service_map.service_configuration
 
         self._cache_client = service_provider.resolve(
             CacheClientAsync)
@@ -58,7 +54,7 @@ class ProxyHandler:
         ArgumentNullException.if_none_or_whitespace('url', url)
 
         route_uri = Uri(
-            url=f'{self._service.base_url}{url}')
+            url=f'{self._service_map.base_url}{url}')
 
         # Handle query params
         if request.args:
@@ -170,13 +166,14 @@ class ProxyHandler:
             return cached_route
 
         # Get the route mapping definition
-        route_mapping = self._service[ingress_route]
+        route_mapping = self._service_map[ingress_route]
         logger.info(f'Service: {route_mapping.service_endpoint}')
 
         # Fire and forget the write to cache
-        fire_task(self._set_cache(
-            hash_key=cache_key,
-            service_route=route_mapping.service_endpoint))
+        fire_task(
+            self._set_cache(
+                hash_key=cache_key,
+                service_route=route_mapping.service_endpoint))
 
         return route_mapping.service_endpoint
 

@@ -27,8 +27,7 @@ class ApiGateway:
         self,
         service_provider: ServiceProvider
     ):
-        self.__service_provider = service_provider
-        self.__configuration = service_provider.resolve(Configuration)
+        self._service_provider = service_provider
 
     def configure(
         self,
@@ -89,27 +88,33 @@ class ApiGateway:
         logger.info('Building service maps')
         for service_key in services:
 
+            # Create the service configuration for the mapped sevice
             service_configuration = ServiceConfiguration(
                 service=services.get(service_key),
                 name=service_key)
 
-            if service_configuration is None:
-                raise ApiGatewayConfigurationException(
-                    f'No configuration found for service: {service_key}')
+            # if service_configuration is None:
+            #     raise ApiGatewayConfigurationException(
+            #         f'No configuration found for service: {service_key}')
 
             logger.info(f'Creating map for service: {service_key}')
 
-            service_map = ServiceMap(
-                container=self.__service_provider,
-                service=service_configuration,
-                service_name=service_key).build()
+            # Build the service map
+            service_map = (
+                ServiceMap(
+                    service_provider=self._service_provider,
+                    service=service_configuration,
+                    service_name=service_key)
+                .build()
+            )
 
+            # Bind this service map to the gateway maps
             self.gateway_map.bind_service_map(
                 service_map=service_map)
 
             proxy_handler = ProxyHandler(
-                service_provider=self.__service_provider,
-                service=service_map)
+                service_provider=self._service_provider,
+                service_map=service_map)
 
             logger.info(
                 f'Configuring proxy: mapped routes: {len(service_map.route_maps)}')

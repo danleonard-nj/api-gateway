@@ -7,4 +7,4 @@ class CacheKey:
         ingress_path: str,
         kwargs: Dict
     ) -> str:
-        return f'{ingress_path}-{kwargs}'
+        return f'api-gateway-{ingress_path}-{kwargs}'
