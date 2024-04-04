@@ -16,14 +16,7 @@ app = Quart(__name__)
 logger = get_logger(__name__)
 
 provider = ContainerProvider.get_service_provider()
-InternalProvider.bind(provider)
-
-
-container = ContainerProvider.get_service_provider()
-proxy = ApiGateway(service_provider=container)
-
-proxy.configure(app=app)
-proxy.build_maps()
+proxy = ApiGateway(app, provider).build_maps()
 
 app.register_blueprint(health_bp)
 

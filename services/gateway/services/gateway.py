@@ -5,7 +5,6 @@ from framework.configuration.configuration import Configuration
 from framework.di.service_provider import ServiceProvider
 from framework.exceptions.nulls import ArgumentNullException
 from framework.logger.providers import get_logger
-
 from services.gateway_map import GatewayMap
 from services.proxy_handler import ProxyHandler
 from services.service_configuration import ServiceConfiguration
@@ -25,23 +24,12 @@ class ApiGatewayConfigurationException(Exception):
 class ApiGateway:
     def __init__(
         self,
+        app,
         service_provider: ServiceProvider
     ):
+        self._app = app
         self._service_provider = service_provider
-
-    def configure(
-        self,
-        app
-    ) -> 'ApiGateway':
-        '''
-        Configure gateway and map routes defined
-        in routing configuration
-        '''
-
-        self.app = app
-        self.routing = self._gather_route_configs()
-        self.gateway_map = GatewayMap()
-        return self
+        self._gateway_map = GatewayMap()
 
     def _load_route_config_services(
         self,
@@ -68,18 +56,16 @@ class ApiGateway:
             configs |= config
             logger.info(f"{len(config)} service routings parsed: {filename}")
 
-        return {
-            'services': configs
-        }
+        return configs
 
     def build_maps(
         self
-    ) -> None:
+    ) -> 'ApiGateway':
         '''
         Build and map the configured routes
         '''
 
-        services = self.routing.get('services')
+        services = self._gather_route_configs()
 
         if services is None:
             raise ApiGatewayConfigurationException(
@@ -100,29 +86,24 @@ class ApiGateway:
             logger.info(f'Creating map for service: {service_key}')
 
             # Build the service map
-            service_map = (
-                ServiceMap(
-                    service_provider=self._service_provider,
-                    service=service_configuration,
-                    service_name=service_key)
-                .build()
-            )
+            service_map = ServiceMap(
+                service_provider=self._service_provider,
+                service=service_configuration,
+                service_name=service_key)
 
             # Bind this service map to the gateway maps
-            self.gateway_map.bind_service_map(
+            self._gateway_map.bind_service_map(
                 service_map=service_map)
 
             proxy_handler = ProxyHandler(
                 service_provider=self._service_provider,
                 service_map=service_map)
 
-            logger.info(
-                f'Configuring proxy: mapped routes: {len(service_map.route_maps)}')
-
             for route in service_map.route_maps:
-                logger.info(
-                    f'Binding proxy view function to route: {route.gateway_endpoint}')
+                logger.info(f'Mapped route: {route.gateway_endpoint} -> {route.service_endpoint}')
 
                 route.map_route(
-                    app=self.app,
+                    app=self._app,
                     proxy_request=proxy_handler.proxy)
+
+        return self

@@ -28,6 +28,9 @@ class ServiceMap:
         self.endpoint_reference: ServiceEndpointReference = service_provider.resolve(
             ServiceEndpointReference)
 
+        self._map_routes()
+        self._build_route_index()
+
     @property
     def mapping(
         self
@@ -115,11 +118,3 @@ class ServiceMap:
 
         for route in self.route_maps:
             self._mapping[route.gateway_endpoint] = route
-
-    def build(
-        self
-    ):
-        logger.info('Building route map')
-        self._map_routes()
-        self._build_route_index()
-        return self

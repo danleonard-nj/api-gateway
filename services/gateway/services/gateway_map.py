@@ -20,9 +20,8 @@ class GatewayMap:
             service mapping parsed from routing config
         '''
 
-        self.services = services or []
-
-        self.gateway_map = self.build_gateway_map()
+        self._services = services or []
+        self._mapping = dict()
 
     def __getitem__(self, key: str) -> str:
         route = self.get_mapped_route(key)
@@ -30,21 +29,6 @@ class GatewayMap:
             raise Exception(
                 f'Failed to find mapped service for endpoint: {key}')
         return route
-
-    def build_gateway_map(
-        self
-    ) -> dict[str, str]:
-        '''
-        Build the gateway map from the service map
-        configurations
-        '''
-
-        gateway_map = dict()
-        for service in self.services:
-            for gateway_route in service.mapping:
-                gateway_map[gateway_route] = service.mapping[gateway_route]
-
-        return gateway_map
 
     def get_mapped_route(
         self,
@@ -61,13 +45,7 @@ class GatewayMap:
             str: mapped service endpoint
         '''
 
-        # for service in self.services:
-        #     if endpoint in service._mapping:
-        #         logger.info(f'{service.base_url}: route match')
-        #         return service._mapping[endpoint]
-
-        # TODO: Benchmarks for this approach vs. looping
-        return self.gateway_map[gateway_endpoint]
+        return self._mapping[gateway_endpoint]
 
     def bind_service_map(
         self,
@@ -85,4 +63,7 @@ class GatewayMap:
         ArgumentNullException.if_none(service_map, 'service_map')
 
         logger.info(f'Binding service map to gateway map: {service_map.service_name}')
-        self.services.append(service_map)
+        self._services.append(service_map)
+
+        for gateway_route in service_map.mapping:
+            self._mapping[gateway_route] = service_map.mapping[gateway_route]
