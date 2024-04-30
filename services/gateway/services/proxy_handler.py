@@ -32,8 +32,9 @@ class ProxyHandler:
     def _parse_interpolated_segments(
         self,
         url: str,
-        segments: Dict
-    ):
+        segments: dict
+    ) -> str:
+
         ArgumentNullException.if_none_or_whitespace(url, 'url')
         ArgumentNullException.if_none(segments, 'segments')
 
@@ -49,8 +50,9 @@ class ProxyHandler:
     def _build_url(
         self,
         url: str,
-        segments: Dict
+        segments: dict
     ) -> str:
+
         ArgumentNullException.if_none_or_whitespace('url', url)
 
         route_uri = Uri(
@@ -100,11 +102,8 @@ class ProxyHandler:
             headers=request.headers,
             timeout=None)
 
-        logger.info(
-            f'Request: {response.request.method}: {response.request.url}')
+        logger.info(f'Request: {response.request.method}: {response.request.url}: {response.status_code}')
 
-        logger.info(f'Service: {response.status_code}')
-        logger.info(f'Service: {response.elapsed} elapsed')
         return response
 
     async def _get_cache(

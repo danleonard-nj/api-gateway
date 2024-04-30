@@ -13,24 +13,6 @@ logger = get_logger(__name__)
 
 
 class ServiceMap:
-    def __init__(
-        self,
-        service_provider: ServiceProvider,
-        service: ServiceConfiguration,
-        service_name: str
-    ):
-        self.service_name = service_name
-        self.service_configuration = service
-        self.route_maps: List[RouteMap] = list()
-
-        self._mapping: dict[str, RouteMap] = dict()
-
-        self.endpoint_reference: ServiceEndpointReference = service_provider.resolve(
-            ServiceEndpointReference)
-
-        self._map_routes()
-        self._build_route_index()
-
     @property
     def mapping(
         self
@@ -42,19 +24,6 @@ class ServiceMap:
         return self._mapping
 
     @property
-    def routes(
-        self
-    ) -> list[dict]:
-        '''
-        Route definitions list for a service configuration
-        as defined in the service configuration JSON
-        '''
-
-        if not self.service_configuration:
-            raise Exception('No service definition found')
-        return self.service_configuration.routing
-
-    @property
     def base_url(
         self
     ) -> str:
@@ -64,6 +33,33 @@ class ServiceMap:
         '''
 
         return self.service_configuration.base_url
+
+    @property
+    def route_maps(
+        self
+    ) -> List[RouteMap]:
+        '''
+        List of route maps for the service
+        '''
+
+        return self._route_maps
+
+    def __init__(
+        self,
+        service_provider: ServiceProvider,
+        service: ServiceConfiguration,
+        service_name: str
+    ):
+        self.service_name = service_name
+        self.service_configuration = service
+
+        self.endpoint_reference: ServiceEndpointReference = service_provider.resolve(
+            ServiceEndpointReference)
+
+        self._route_maps: List[RouteMap] = list()
+        self._mapping: dict[str, RouteMap] = dict()
+
+        self._map_routes()
 
     def __getitem__(
         self,
@@ -89,32 +85,17 @@ class ServiceMap:
         Map the service routes to endpoint references
         '''
 
-        logger.info(f'Routes to map: {len(self.routes)}')
-        for route in self.routes:
-            mapped = RouteMap(
-                route=route)
+        logger.info(f'Routes to map: {len(self.service_configuration.routing)}')
+
+        for route in self.service_configuration.routing:
+            route_map = RouteMap(route=route)
 
             self.endpoint_reference.add(
                 service_configuration=self.service_configuration,
-                endpoint_id=mapped.endpoint_id)
+                endpoint_id=route_map.endpoint_id)
 
-            validate_leading_slash(
-                url=mapped.service_endpoint)
-            validate_leading_slash(
-                url=mapped.gateway_endpoint)
+            validate_leading_slash(url=route_map.service_endpoint)
+            validate_leading_slash(url=route_map.gateway_endpoint)
 
-            logger.info(
-                f'Mapped: {mapped.gateway_endpoint}')
-            self.route_maps.append(mapped)
-
-    def _build_route_index(
-        self
-    ) -> dict[str, RouteMap]:
-        '''
-        Build the lookup from gateway endpoint to route map
-        '''
-
-        self._mapping = dict()
-
-        for route in self.route_maps:
-            self._mapping[route.gateway_endpoint] = route
+            self._route_maps.append(route_map)
+            self._mapping[route_map.gateway_endpoint] = route_map

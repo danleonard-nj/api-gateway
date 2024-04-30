@@ -23,11 +23,17 @@ class GatewayMap:
         self._services = services or []
         self._mapping = dict()
 
-    def __getitem__(self, key: str) -> str:
+    def __getitem__(
+        self,
+        key: str
+    ) -> str:
+
         route = self.get_mapped_route(key)
+
         if not route:
             raise Exception(
                 f'Failed to find mapped service for endpoint: {key}')
+
         return route
 
     def get_mapped_route(

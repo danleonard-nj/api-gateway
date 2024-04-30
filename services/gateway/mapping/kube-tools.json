@@ -146,6 +146,20 @@
           "allowed_methods": [
             "GET"
           ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/conversation",
+          "service_endpoint": "/api/conversation",
+          "allowed_methods": [
+            "POST"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/conversation/inbound",
+          "service_endpoint": "/api/conversation/inbound",
+          "allowed_methods": [
+            "POST"
+          ]
         }
       ]
     }
