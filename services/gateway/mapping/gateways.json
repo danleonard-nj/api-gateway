@@ -150,6 +150,13 @@
           ]
         },
         {
+          "gateway_endpoint": "/api/shipengine/rates/estimate",
+          "service_endpoint": "/api/rates/estimate",
+          "allowed_methods": [
+            "POST"
+          ]
+        },
+        {
           "gateway_endpoint": "/api/shipengine/shipment",
           "service_endpoint": "/api/shipment",
           "allowed_methods": [
