@@ -160,6 +160,20 @@
           "allowed_methods": [
             "POST"
           ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/fakebot/voice",
+          "service_endpoint": "/api/fakebot/voice",
+          "allowed_methods": [
+            "POST"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/fakebot/gpt-reply",
+          "service_endpoint": "/api/fakebot/gpt-reply",
+          "allowed_methods": [
+            "POST"
+          ]
         }
       ]
     }
