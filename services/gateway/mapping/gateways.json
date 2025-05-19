@@ -170,6 +170,13 @@
           "allowed_methods": [
             "PUT"
           ]
+        },
+        {
+          "gateway_endpoint": "/api/shipengine/labels/<label_id>/void",
+          "service_endpoint": "/api/labels/<label_id>/void",
+          "allowed_methods": [
+            "PUT"
+          ]
         }
       ]
     },
