@@ -177,6 +177,44 @@
           "allowed_methods": [
             "PUT"
           ]
+        },
+        {
+          "gateway_endpoint": "/api/shipengine/addresses",
+          "service_endpoint": "/api/address",
+          "allowed_methods": [
+            "GET",
+            "POST"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/shipengine/addresses/default",
+          "service_endpoint": "/api/address/default",
+          "allowed_methods": [
+            "GET"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/shipengine/addresses/validate",
+          "service_endpoint": "/api/address/validate",
+          "allowed_methods": [
+            "POST"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/shipengine/addresses/<address_id>",
+          "service_endpoint": "/api/address/<address_id>",
+          "allowed_methods": [
+            "GET",
+            "PUT",
+            "DELETE"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/shipengine/addresses/<address_id>/default",
+          "service_endpoint": "/api/address/<address_id>/default",
+          "allowed_methods": [
+            "PUT"
+          ]
         }
       ]
     },
