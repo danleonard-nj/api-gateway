@@ -15,8 +15,8 @@
           ]
         },
         {
-          "gateway_endpoint" : "api/twilio/sms/inbound",
-          "service_endpoint" : "api/twilio/sms/inbound",
+          "gateway_endpoint" : "/api/twilio/sms/inbound",
+          "service_endpoint" : "/api/twilio/sms/inbound",
           "allowed_methods" : [
             "POST"
           ]
