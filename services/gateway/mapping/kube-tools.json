@@ -181,6 +181,20 @@
           "allowed_methods": [
             "POST"
           ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/calendar/prompt",
+          "service_endpoint": "/api/calendar/prompt",
+          "allowed_methods": [
+            "POST"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/calendar/save",
+          "service_endpoint": "/api/calendar/save",
+          "allowed_methods": [
+            "POST"
+          ]
         }
       ]
     }
