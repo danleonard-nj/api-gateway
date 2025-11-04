@@ -195,6 +195,13 @@
           "allowed_methods": [
             "POST"
           ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/calendar/upload",
+          "service_endpoint": "/api/calendar/upload",
+          "allowed_methods": [
+            "POST"
+          ]
         }
       ]
     }
