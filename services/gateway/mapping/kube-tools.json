@@ -202,7 +202,21 @@
           "allowed_methods": [
             "POST"
           ]
-        }
+        },
+        {
+          "gateway_endpoint": "/api/tools/ts/posts",
+          "service_endpoint": "/api/ts/posts",
+          "allowed_methods": [
+            "GET"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/ts/posts/<post_id>",
+          "service_endpoint": "/api/ts/posts/<post_id>",
+          "allowed_methods": [
+            "GET"
+          ]
+        } 
       ]
     }
   }
