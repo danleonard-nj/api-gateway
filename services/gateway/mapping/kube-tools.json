@@ -64,6 +64,13 @@
           ]
         },
         {
+          "gateway_endpoint": "/api/tools/bank/balances/<balance_id>",
+          "service_endpoint": "/api/bank/balances/<balance_id>",
+          "allowed_methods": [
+            "DELETE"
+          ]
+        },
+        {
           "gateway_endpoint": "/api/tools/bank/balances/history",
           "service_endpoint": "/api/bank/balances/history",
           "allowed_methods": [
