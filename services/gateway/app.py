@@ -5,7 +5,6 @@ from framework.logger.providers import get_logger
 from framework.serialization.serializer import configure_serializer
 from framework.swagger.quart.swagger import Swagger
 from quart import Quart
-from werkzeug.middleware.proxy_fix import ProxyFix
 
 from routes.health import health_bp
 from services.gateway import ApiGateway
@@ -14,7 +13,6 @@ from utilities.provider import ContainerProvider
 load_dotenv()
 
 app = Quart(__name__)
-app.asgi_app = ProxyFix(app.asgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 logger = get_logger(__name__)
 
 provider = ContainerProvider.get_service_provider()
