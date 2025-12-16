@@ -1,5 +1,18 @@
 {
   "services": {
+    "health-checks": {
+      "base_url": "http://health-checks.worktracker .svc.cluster.local",
+      "port": 80,
+      "routing": [
+        {
+          "gateway_endpoint": "/api/health/services",
+          "service_endpoint": "/services",
+          "allowed_methods": [
+            "GET"
+          ]
+        }
+      ]
+    },
     "kube_tools_api": {
       "base_url": "http://kube-tools.kube-tools.svc.cluster.local",
       "port": 80,
