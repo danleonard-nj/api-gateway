@@ -18,6 +18,13 @@
       "port": 80,
       "routing": [
         {
+          "gateway_endpoint": "/api/tools/transcribe",
+          "service_endpoint": "/api/transcribe",
+          "allowed_methods": [
+            "POST"
+          ]
+        },
+        {
           "gateway_endpoint": "/api/tools/podcasts/shows",
           "service_endpoint": "/api/podcasts/shows",
           "allowed_methods": [
