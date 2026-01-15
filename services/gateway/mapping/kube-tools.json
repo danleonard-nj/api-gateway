@@ -25,6 +25,13 @@
           ]
         },
         {
+          "gateway_endpoint": "/api/tools/transcribe/history",
+          "service_endpoint": "/api/transcribe/history",
+          "allowed_methods": [
+            "POST"
+          ]
+        },
+        {
           "gateway_endpoint": "/api/tools/podcasts/shows",
           "service_endpoint": "/api/podcasts/shows",
           "allowed_methods": [
@@ -243,7 +250,7 @@
           "allowed_methods": [
             "GET"
           ]
-        } 
+        }
       ]
     }
   }
