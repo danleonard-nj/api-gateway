@@ -250,6 +250,13 @@
           "allowed_methods": [
             "GET"
           ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/stock/monitor/poll",
+          "service_endpoint": "/api/stock/monitor/poll",
+          "allowed_methods": [
+            "POST"
+          ]
         }
       ]
     }
