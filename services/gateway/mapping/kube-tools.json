@@ -25,9 +25,34 @@
           ]
         },
         {
+          "gateway_endpoint": "/api/tools/feedback",
+          "service_endpoint": "/api/feedback",
+          "allowed_methods": [
+            "POST",
+            "GET"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/transcription/feedback/<transcription_id>",
+          "service_endpoint": "/api/transcription/feedback/<transcription_id>",
+          "allowed_methods": [
+            "POST",
+            "GET"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/transcription/audio/<storage_ref>",
+          "service_endpoint": "/api/transcription/audio/<storage_ref>",
+          "allowed_methods": [
+            "POST",
+            "GET"
+          ]
+        },
+        {
           "gateway_endpoint": "/api/tools/transcribe/history",
           "service_endpoint": "/api/transcribe/history",
           "allowed_methods": [
+            "GET",
             "POST"
           ]
         },
