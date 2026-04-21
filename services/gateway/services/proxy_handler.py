@@ -1,6 +1,7 @@
 import traceback
 from typing import Dict
 
+import httpx
 from domain.cache import CacheKey
 from framework.clients.cache_client import CacheClientAsync
 from framework.di.service_provider import ServiceProvider
@@ -13,6 +14,8 @@ from services.service_map import ServiceMap
 from utilities.utils import fire_task
 
 logger = get_logger(__name__)
+
+IDEMPOTENT_METHODS = frozenset({'GET', 'HEAD', 'PUT', 'DELETE', 'OPTIONS'})
 
 
 class ProxyHandler:
@@ -95,12 +98,27 @@ class ProxyHandler:
         data = await request.get_data()
         logger.info(f'Content bytes: {len(data)}')
 
-        response = await client.request(
-            method=request.method,
-            url=url,
-            data=data,
-            headers=request.headers,
-            timeout=None)
+        try:
+            response = await client.request(
+                method=request.method,
+                url=url,
+                data=data,
+                headers=request.headers)
+        except httpx.RemoteProtocolError as ex:
+            # The server closed a stale keep-alive connection before the
+            # request was transmitted.  Safe to retry once for idempotent
+            # methods because the upstream never processed the request.
+            if request.method.upper() in IDEMPOTENT_METHODS:
+                logger.warning(
+                    f'Stale keep-alive, retrying '
+                    f'[{request.method} {url}]: {ex}')
+                response = await client.request(
+                    method=request.method,
+                    url=url,
+                    data=data,
+                    headers=request.headers)
+            else:
+                raise
 
         logger.info(f'Request: {response.request.method}: {response.request.url}: {response.status_code}')
 
@@ -242,9 +260,22 @@ class ProxyHandler:
 
         try:
             return await self.handle_request(**kwargs)
+        except httpx.PoolTimeout as ex:
+            logger.error(
+                f'Pool timeout [{request.method} {request.url}]: {ex}')
+            return {'error': 'Gateway timeout'}, 504
+        except httpx.ConnectTimeout as ex:
+            logger.error(
+                f'Connect timeout [{request.method} {request.url}]: {ex}')
+            return {'error': 'Gateway timeout'}, 504
+        except httpx.ReadTimeout as ex:
+            logger.error(
+                f'Read timeout [{request.method} {request.url}]: {ex}')
+            return {'error': 'Gateway timeout'}, 504
+        except httpx.RemoteProtocolError as ex:
+            logger.error(
+                f'Remote protocol error [{request.method} {request.url}]: {ex}')
+            return {'error': 'Bad gateway'}, 502
         except Exception as ex:
-            return {
-                'error': str(ex),
-                'traceback': traceback.format_exc(),
-                'type': str(type(ex))
-            }, (status_code or 500)
+            logger.exception(f'Unhandled proxy error [{request.method} {request.url}]: {ex}')
+            return {'error': 'Internal server error'}, 500

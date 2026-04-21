@@ -2,12 +2,24 @@ from framework.clients.cache_client import CacheClientAsync
 from framework.configuration.configuration import Configuration
 from framework.di.service_collection import ServiceCollection
 from framework.di.static_provider import ProviderBase
-from httpx import AsyncClient
+from httpx import AsyncClient, Limits, Timeout
 from services.endpoint_reference import ServiceEndpointReference
 
 
 def configure_http_client(container):
-    return AsyncClient(timeout=None)
+    return AsyncClient(
+        timeout=Timeout(
+            connect=5.0,
+            read=30.0,
+            write=10.0,
+            pool=5.0
+        ),
+        limits=Limits(
+            max_connections=100,
+            max_keepalive_connections=20,
+            keepalive_expiry=60.0
+        )
+    )
 
 
 class ContainerProvider(ProviderBase):

@@ -4,6 +4,7 @@ from framework.di.static_provider import InternalProvider
 from framework.logger.providers import get_logger
 from framework.serialization.serializer import configure_serializer
 from framework.swagger.quart.swagger import Swagger
+from httpx import AsyncClient
 from quart import Quart
 
 from routes.health import health_bp
@@ -31,6 +32,12 @@ swagger.configure()
 async def startup():
     RequestContextProvider.initialize_provider(
         app=app)
+
+
+@app.after_serving
+async def shutdown():
+    http_client = provider.resolve(AsyncClient)
+    await http_client.aclose()
 
 
 @app.after_request
