@@ -1,1 +1,1 @@
-uvicorn --log-level=info --host 0.0.0.0 --port=80 --workers 2 --proxy-headers app:app --graceful-timeout 120
+uvicorn --log-level=info --host 0.0.0.0 --port=80 --workers 2 --proxy-headers --timeout-keep-alive 300 app:app
