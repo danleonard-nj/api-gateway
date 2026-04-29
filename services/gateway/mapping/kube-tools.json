@@ -299,6 +299,13 @@
           ]
         },
         {
+          "gateway_endpoint": "/api/tools/journal/tags",
+          "service_endpoint": "/api/journal/tags",
+          "allowed_methods": [
+            "GET"
+          ]
+        },
+        {
           "gateway_endpoint": "/api/tools/journal/entries/<entry_id>",
           "service_endpoint": "/api/journal/entries/<entry_id>",
           "allowed_methods": [
