@@ -18,9 +18,9 @@
       "port": 80,
       "routing": [
         {
-          "gateway_endpoint" : "/api/tools/transcription/internal/archive",
-          "service_endpoint" : "/api/transcription/internal/archive",
-          "allowed_methods" : [
+          "gateway_endpoint": "/api/tools/transcription/internal/archive",
+          "service_endpoint": "/api/transcription/internal/archive",
+          "allowed_methods": [
             "POST"
           ]
         },
@@ -286,6 +286,30 @@
         {
           "gateway_endpoint": "/api/tools/stock/monitor/poll",
           "service_endpoint": "/api/stock/monitor/poll",
+          "allowed_methods": [
+            "POST"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/journal/entries",
+          "service_endpoint": "/api/journal/entries",
+          "allowed_methods": [
+            "POST",
+            "GET"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/journal/entries/<entry_id>",
+          "service_endpoint": "/api/journal/entries/<entry_id>",
+          "allowed_methods": [
+            "GET",
+            "PATCH",
+            "DELETE"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/journal/entries/<entry_id>/process",
+          "service_endpoint": "/api/journal/entries/<entry_id>/process",
           "allowed_methods": [
             "POST"
           ]
