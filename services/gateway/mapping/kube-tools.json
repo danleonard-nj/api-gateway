@@ -313,6 +313,13 @@
           "allowed_methods": [
             "POST"
           ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/journal/insights",
+          "service_endpoint": "/api/journal/insights",
+          "allowed_methods": [
+            "GET"
+          ]
         }
       ]
     }
