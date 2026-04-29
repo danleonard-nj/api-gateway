@@ -10,7 +10,7 @@ def configure_http_client(container):
     return AsyncClient(
         timeout=Timeout(
             connect=5.0,
-            read=30.0,
+            read=120.0,
             write=10.0,
             pool=5.0
         ),
