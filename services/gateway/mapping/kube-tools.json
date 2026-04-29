@@ -315,6 +315,20 @@
           ]
         },
         {
+          "gateway_endpoint": "/api/tools/journal/entries/<entry_id>/polish",
+          "service_endpoint": "/api/journal/entries/<entry_id>/polish",
+          "allowed_methods": [
+            "POST"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/journal/entries/<entry_id>/polish/undo",
+          "service_endpoint": "/api/journal/entries/<entry_id>/polish/undo",
+          "allowed_methods": [
+            "POST"
+          ]
+        },
+        {
           "gateway_endpoint": "/api/tools/journal/insights",
           "service_endpoint": "/api/journal/insights",
           "allowed_methods": [
