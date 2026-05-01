@@ -341,6 +341,22 @@
           "allowed_methods": [
             "GET"
           ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/journal/entries/<entry_id>/attachments",
+          "service_endpoint": "/api/journal/entries/<entry_id>/attachments",
+          "allowed_methods": [
+            "POST",
+            "GET"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/journal/entries/<entry_id>/attachments/<attachment_id>",
+          "service_endpoint": "/api/journal/entries/<entry_id>/attachments/<attachment_id>",
+          "allowed_methods": [
+            "GET",
+            "DELETE"
+          ]
         }
       ]
     }
