@@ -322,6 +322,13 @@
           ]
         },
         {
+          "gateway_endpoint": "/api/tools/journal/entries/<entry_id>/reprocess",
+          "service_endpoint": "/api/journal/entries/<entry_id>/reprocess",
+          "allowed_methods": [
+            "POST"
+          ]
+        },
+        {
           "gateway_endpoint": "/api/tools/journal/entries/<entry_id>/polish",
           "service_endpoint": "/api/journal/entries/<entry_id>/polish",
           "allowed_methods": [
