@@ -270,6 +270,49 @@
           ]
         },
         {
+          "gateway_endpoint": "/api/tools/tasks",
+          "service_endpoint": "/api/tasks",
+          "allowed_methods": [
+            "GET"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/tasks/prompt",
+          "service_endpoint": "/api/tasks/prompt",
+          "allowed_methods": [
+            "POST"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/tasks/save",
+          "service_endpoint": "/api/tasks/save",
+          "allowed_methods": [
+            "POST"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/tasks/<task_id>",
+          "service_endpoint": "/api/tasks/<task_id>",
+          "allowed_methods": [
+            "PATCH",
+            "DELETE"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/tasks/<task_id>/complete",
+          "service_endpoint": "/api/tasks/<task_id>/complete",
+          "allowed_methods": [
+            "POST"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/tasks/poll",
+          "service_endpoint": "/api/tasks/poll",
+          "allowed_methods": [
+            "POST"
+          ]
+        },
+        {
           "gateway_endpoint": "/api/tools/ts/posts",
           "service_endpoint": "/api/ts/posts",
           "allowed_methods": [
@@ -363,6 +406,13 @@
           "allowed_methods": [
             "GET",
             "DELETE"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/tasks/lists",
+          "service_endpoint": "/api/tasks/lists",
+          "allowed_methods": [
+            "GET"
           ]
         }
       ]
