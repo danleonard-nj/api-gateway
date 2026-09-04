@@ -8,7 +8,7 @@ from framework.di.service_provider import ServiceProvider
 from framework.exceptions.nulls import ArgumentNullException
 from framework.logger.providers import get_logger
 from framework.uri.uri import Uri
-from httpx2 import AsyncClient
+from httpx2 import AsyncClient, Timeout
 from quart import Response, request
 from services.service_map import ServiceMap
 from utilities.utils import fire_task
@@ -16,6 +16,21 @@ from utilities.utils import fire_task
 logger = get_logger(__name__)
 
 IDEMPOTENT_METHODS = frozenset({'GET', 'HEAD', 'PUT', 'DELETE', 'OPTIONS'})
+
+# Connection-scoped headers that belong to the hop, not the message.  Passing
+# them through a proxy is wrong in both directions: `transfer-encoding` and
+# `content-length` describe a framing that we are re-doing ourselves, and
+# `connection` / `upgrade` describe a socket that ends at the gateway.
+HOP_BY_HOP_HEADERS = frozenset({
+    'connection',
+    'keep-alive',
+    'proxy-authenticate',
+    'proxy-authorization',
+    'te',
+    'trailer',
+    'transfer-encoding',
+    'upgrade',
+})
 
 
 class ProxyHandler:
@@ -124,6 +139,152 @@ class ProxyHandler:
 
         return response
 
+    def _is_streaming(
+        self,
+        ingress_route: str
+    ) -> bool:
+        '''
+        Whether this route forwards the upstream response as it arrives.
+
+        Route-level `streaming` wins; otherwise the service-wide default
+        applies.  Both default to off, so a mapping that says nothing keeps the
+        original buffered behaviour.
+        '''
+
+        route_map = self._service_map[ingress_route]
+
+        if route_map.streaming is not None:
+            return bool(route_map.streaming)
+
+        return self._configuration.streaming
+
+    def _stream_timeout(
+        self,
+        ingress_route: str
+    ) -> Timeout:
+        '''
+        Timeout for a streaming request.
+
+        The read timeout is the one that matters: a server-sent-event response
+        is idle between events, and the client-wide 120s read timeout would
+        tear it down mid-stream.  `None` disables it, which is the right
+        default for a stream whose length is the length of the work upstream.
+        '''
+
+        route_map = self._service_map[ingress_route]
+
+        read_timeout = route_map.stream_read_timeout
+        if read_timeout is None:
+            read_timeout = self._configuration.stream_read_timeout
+
+        return Timeout(connect=5.0, read=read_timeout, write=10.0, pool=5.0)
+
+    def _upstream_request_headers(self) -> Dict:
+        '''
+        Inbound headers to forward on a streaming route.
+
+        `Host` is dropped so httpx derives it from the target URL -- the
+        upstream sees its own hostname, which is what a service doing Host
+        validation expects.  The original is preserved in `X-Forwarded-Host`.
+        `Content-Length` is dropped because httpx recalculates it from the body
+        we hand it.
+        '''
+
+        skip = HOP_BY_HOP_HEADERS | {'host', 'content-length'}
+
+        headers = {
+            key: value for key, value in request.headers.items()
+            if key.lower() not in skip
+        }
+
+        if inbound_host := request.headers.get('Host'):
+            headers['X-Forwarded-Host'] = inbound_host
+        if request.remote_addr:
+            headers['X-Forwarded-For'] = request.remote_addr
+        headers['X-Forwarded-Proto'] = request.scheme
+
+        return headers
+
+    def _upstream_response_headers(
+        self,
+        service_response
+    ) -> Dict:
+        '''
+        Upstream response headers to return to the caller.
+
+        Framing headers are stripped: the body is re-chunked by the ASGI server
+        as it streams, so an upstream `Content-Length` would contradict what we
+        actually send.  `Date` and `Server` are stripped for the same reason --
+        our own ASGI server emits them, and forwarding the upstream's produces
+        a comma-joined duplicate.
+        '''
+
+        skip = HOP_BY_HOP_HEADERS | {'content-length', 'date', 'server'}
+
+        headers = {
+            key: value for key, value in service_response.headers.items()
+            if key.lower() not in skip
+        }
+
+        if request.remote_addr:
+            headers['X-Remote-Address'] = request.remote_addr
+
+        return headers
+
+    async def _stream_request(
+        self,
+        url: str,
+        ingress_route: str
+    ) -> Response:
+        '''
+        Proxy a response without buffering it.
+
+        `send(stream=True)` returns once the status line and headers have
+        arrived, leaving the body unread, so the caller starts receiving data
+        while the upstream is still producing it.  That is what Streamable HTTP
+        and any other server-sent-event endpoint requires: buffering would hold
+        every frame until the upstream call finished.
+
+        The request body is still read in full first.  Streaming it too would
+        mean handling `Expect: 100-continue` and non-idempotent retries, and
+        nothing routed here sends a large request.
+        '''
+
+        logger.info(f'Streaming request: {request.method}: {url}')
+
+        client = self._provider.resolve(AsyncClient)
+        data = await request.get_data()
+
+        proxy_request = client.build_request(
+            method=request.method,
+            url=url,
+            content=data or None,
+            headers=self._upstream_request_headers(),
+            timeout=self._stream_timeout(ingress_route))
+
+        service_response = await client.send(proxy_request, stream=True)
+
+        logger.info(
+            f'Stream open: {request.method}: {url}: {service_response.status_code}')
+
+        async def body():
+            try:
+                async for chunk in service_response.aiter_raw():
+                    yield chunk
+            except Exception as ex:
+                # The response head is already on the wire, so this cannot be
+                # turned into a 5xx.  Log it and end the stream; the client
+                # sees a truncated body, which is the honest outcome.
+                logger.warning(
+                    f'Stream interrupted [{request.method} {url}]: {ex}')
+            finally:
+                await service_response.aclose()
+
+        return Response(
+            body(),
+            status=service_response.status_code,
+            headers=self._upstream_response_headers(service_response))
+
     async def _get_cache(
         self,
         hash_key: str
@@ -215,6 +376,11 @@ class ProxyHandler:
             ))
 
         logger.info(f'Service URL: {service_url}')
+
+        if self._is_streaming(ingress_route):
+            return await self._stream_request(
+                url=service_url,
+                ingress_route=ingress_route)
 
         service_response = await self._send_request(
             url=service_url)

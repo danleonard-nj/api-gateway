@@ -46,7 +46,14 @@ class ApiGateway:
     ):
         configs = dict()
 
-        for base_filename in os.listdir('mapping'):
+        for base_filename in sorted(os.listdir('mapping')):
+            # Only JSON is a route config.  Anything else in the directory --
+            # a stray editor backup, notes, a .gitkeep -- would otherwise fail
+            # to parse and take the whole gateway down at startup.
+            if not base_filename.endswith('.json'):
+                logger.info(f"Skipping non-config file: {base_filename}")
+                continue
+
             filename = f'./mapping/{base_filename}'
             logger.info(f"Loading routes from config: {filename}")
 

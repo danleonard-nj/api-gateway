@@ -11,6 +11,12 @@ class RouteMap:
         self.gateway_endpoint = route.get('gateway_endpoint')
         self.allowed_methods = self.route.get('allowed_methods') or []
 
+        # Per-route streaming override.  None means inherit the service-wide
+        # setting; True forwards the upstream response body as it arrives
+        # instead of buffering it.
+        self.streaming = self.route.get('streaming')
+        self.stream_read_timeout = self.route.get('stream_read_timeout')
+
     def map_route(
         self,
         app: Any,

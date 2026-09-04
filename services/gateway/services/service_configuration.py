@@ -38,3 +38,13 @@ class ServiceConfiguration:
         self.port = self.service.get('port')
         self.cors = self.service.get('cors')
         self.routing = self.service.get('routing')
+
+        # Service-wide default for response streaming.  Individual routes may
+        # override it.  Off by default so existing services are unaffected.
+        self.streaming = bool(self.service.get('streaming', False))
+
+        # Read timeout applied to streaming routes, in seconds.  None means no
+        # read timeout, which is what a long-lived SSE response needs -- the
+        # client's default 120s read timeout would otherwise kill the stream
+        # during any gap between events.
+        self.stream_read_timeout = self.service.get('stream_read_timeout')

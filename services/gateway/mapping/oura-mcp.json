@@ -1,0 +1,78 @@
+{
+  "services": {
+    "oura_mcp_api": {
+      "base_url": "http://oura-mcp.oura.svc.cluster.local",
+      "port": 80,
+      "routing": [
+        {
+          "gateway_endpoint": "/api/oura/mcp",
+          "service_endpoint": "/mcp",
+          "allowed_methods": [
+            "GET",
+            "POST",
+            "DELETE"
+          ],
+          "streaming": true,
+          "stream_read_timeout": null
+        },
+        {
+          "gateway_endpoint": "/api/oura/health",
+          "service_endpoint": "/health",
+          "allowed_methods": [
+            "GET"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/oura/ready",
+          "service_endpoint": "/ready",
+          "allowed_methods": [
+            "GET"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/oura/status",
+          "service_endpoint": "/api/status",
+          "allowed_methods": [
+            "GET"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/oura/audit",
+          "service_endpoint": "/api/audit",
+          "allowed_methods": [
+            "GET"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/oura/webhooks/events",
+          "service_endpoint": "/api/webhooks/events",
+          "allowed_methods": [
+            "GET"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/oura/webhooks/subscriptions",
+          "service_endpoint": "/api/webhooks/subscriptions",
+          "allowed_methods": [
+            "GET",
+            "POST"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/oura/webhooks/subscriptions/<subscription_id>/renew",
+          "service_endpoint": "/api/webhooks/subscriptions/<subscription_id>/renew",
+          "allowed_methods": [
+            "PUT"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/oura/webhooks/subscriptions/<subscription_id>",
+          "service_endpoint": "/api/webhooks/subscriptions/<subscription_id>",
+          "allowed_methods": [
+            "DELETE"
+          ]
+        }
+      ]
+    }
+  }
+}
