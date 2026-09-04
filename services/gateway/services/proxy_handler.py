@@ -1,14 +1,14 @@
 import traceback
 from typing import Dict
 
-import httpx
+import httpx2
 from domain.cache import CacheKey
 from framework.clients.cache_client import CacheClientAsync
 from framework.di.service_provider import ServiceProvider
 from framework.exceptions.nulls import ArgumentNullException
 from framework.logger.providers import get_logger
 from framework.uri.uri import Uri
-from httpx import AsyncClient
+from httpx2 import AsyncClient
 from quart import Response, request
 from services.service_map import ServiceMap
 from utilities.utils import fire_task
@@ -104,7 +104,7 @@ class ProxyHandler:
                 url=url,
                 data=data,
                 headers=request.headers)
-        except httpx.RemoteProtocolError as ex:
+        except httpx2.RemoteProtocolError as ex:
             # The server closed a stale keep-alive connection before the
             # request was transmitted.  Safe to retry once for idempotent
             # methods because the upstream never processed the request.
@@ -260,19 +260,19 @@ class ProxyHandler:
 
         try:
             return await self.handle_request(**kwargs)
-        except httpx.PoolTimeout as ex:
+        except httpx2.PoolTimeout as ex:
             logger.error(
                 f'Pool timeout [{request.method} {request.url}]: {ex}')
             return {'error': 'Gateway timeout'}, 504
-        except httpx.ConnectTimeout as ex:
+        except httpx2.ConnectTimeout as ex:
             logger.error(
                 f'Connect timeout [{request.method} {request.url}]: {ex}')
             return {'error': 'Gateway timeout'}, 504
-        except httpx.ReadTimeout as ex:
+        except httpx2.ReadTimeout as ex:
             logger.error(
                 f'Read timeout [{request.method} {request.url}]: {ex}')
             return {'error': 'Gateway timeout'}, 504
-        except httpx.RemoteProtocolError as ex:
+        except httpx2.RemoteProtocolError as ex:
             logger.error(
                 f'Remote protocol error [{request.method} {request.url}]: {ex}')
             return {'error': 'Bad gateway'}, 502

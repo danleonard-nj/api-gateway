@@ -2,7 +2,7 @@ from framework.clients.cache_client import CacheClientAsync
 from framework.configuration.configuration import Configuration
 from framework.di.service_collection import ServiceCollection
 from framework.di.static_provider import ProviderBase
-from httpx import AsyncClient, Limits, Timeout
+from httpx2 import AsyncClient, Limits, Timeout
 from services.endpoint_reference import ServiceEndpointReference
 
 

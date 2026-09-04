@@ -3,4 +3,4 @@ azure-servicebus
 quart
 uvloop
 uvicorn
-httpx
+httpx2

@@ -4,7 +4,7 @@ from framework.di.static_provider import InternalProvider
 from framework.logger.providers import get_logger
 from framework.serialization.serializer import configure_serializer
 from framework.swagger.quart.swagger import Swagger
-from httpx import AsyncClient
+from httpx2 import AsyncClient
 from quart import Quart
 
 from routes.health import health_bp
