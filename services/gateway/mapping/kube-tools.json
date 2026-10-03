@@ -409,6 +409,68 @@
           ]
         },
         {
+          "gateway_endpoint": "/api/tools/journal/mcp",
+          "service_endpoint": "/api/tools/journal/mcp",
+          "allowed_methods": [
+            "GET",
+            "POST",
+            "DELETE"
+          ],
+          "streaming": true,
+          "stream_read_timeout": null
+        },
+        {
+          "gateway_endpoint": "/.well-known/oauth-protected-resource/api/tools/journal/mcp",
+          "service_endpoint": "/.well-known/oauth-protected-resource/api/tools/journal/mcp",
+          "allowed_methods": [
+            "GET"
+          ]
+        },
+        {
+          "gateway_endpoint": "/.well-known/oauth-authorization-server/api/tools/journal/oauth",
+          "service_endpoint": "/.well-known/oauth-authorization-server/api/tools/journal/oauth",
+          "allowed_methods": [
+            "GET"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/journal/oauth/authorize",
+          "service_endpoint": "/api/tools/journal/oauth/authorize",
+          "allowed_methods": [
+            "GET",
+            "POST"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/journal/oauth/consent",
+          "service_endpoint": "/api/tools/journal/oauth/consent",
+          "allowed_methods": [
+            "GET",
+            "POST"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/journal/oauth/token",
+          "service_endpoint": "/api/tools/journal/oauth/token",
+          "allowed_methods": [
+            "POST"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/journal/oauth/register",
+          "service_endpoint": "/api/tools/journal/oauth/register",
+          "allowed_methods": [
+            "POST"
+          ]
+        },
+        {
+          "gateway_endpoint": "/api/tools/journal/oauth/revoke",
+          "service_endpoint": "/api/tools/journal/oauth/revoke",
+          "allowed_methods": [
+            "POST"
+          ]
+        },
+        {
           "gateway_endpoint": "/api/tools/tasks/lists",
           "service_endpoint": "/api/tasks/lists",
           "allowed_methods": [

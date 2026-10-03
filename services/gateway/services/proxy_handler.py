@@ -1,5 +1,5 @@
-import traceback
 from typing import Dict
+from urllib.parse import quote
 
 import httpx2
 from domain.cache import CacheKey
@@ -59,9 +59,13 @@ class ProxyHandler:
         interp_url = url
         for segment in segments:
             repl = f'<{segment}>'
+            # Segment values arrive URL-decoded from Werkzeug, so they are
+            # percent-encoded again on the way out.  Without this a value
+            # containing '?', '#' or '&' is not data any more -- it becomes
+            # syntax in the upstream URL.
             interp_url = interp_url.replace(
                 repl,
-                segments[segment])
+                quote(str(segments[segment]), safe=''))
 
         return interp_url
 
@@ -71,15 +75,26 @@ class ProxyHandler:
         segments: dict
     ) -> str:
 
-        ArgumentNullException.if_none_or_whitespace('url', url)
+        ArgumentNullException.if_none_or_whitespace(url, 'url')
+
+        # Route segments are interpolated into the path *before* the query
+        # string is attached.  Substituting into the finished URL would let a
+        # segment inject its own query parameters ahead of ours, or truncate
+        # the URL at a '#'.
+        if any(segments):
+            url = self._parse_interpolated_segments(
+                url=url,
+                segments=segments)
 
         route_uri = Uri(
             url=f'{self._service_map.base_url}{url}')
 
-        # Handle query params
+        # Handle query params.  Passed as pairs rather than a dict: the
+        # inbound args are a MultiDict, and flattening it silently dropped
+        # every value but the first of a repeated key (`?tag=a&tag=b`).
         if request.args:
             logger.info(f'Query params: {request.args}')
-            route_uri.query = dict(request.args)
+            route_uri.query = list(request.args.items(multi=True))
 
         # Handle non-standard port mapping
         if (self._configuration.port
@@ -88,12 +103,6 @@ class ProxyHandler:
 
         # Build the proxy endpoint
         proxy_url = route_uri.get_url()
-
-        # Handle route segments
-        if any(segments):
-            proxy_url = self._parse_interpolated_segments(
-                url=proxy_url,
-                segments=segments)
 
         logger.info(f'Proxy: {proxy_url}')
 
@@ -113,12 +122,14 @@ class ProxyHandler:
         data = await request.get_data()
         logger.info(f'Content bytes: {len(data)}')
 
+        headers = self._upstream_request_headers()
+
         try:
             response = await client.request(
                 method=request.method,
                 url=url,
-                data=data,
-                headers=request.headers)
+                content=data,
+                headers=headers)
         except httpx2.RemoteProtocolError as ex:
             # The server closed a stale keep-alive connection before the
             # request was transmitted.  Safe to retry once for idempotent
@@ -130,8 +141,8 @@ class ProxyHandler:
                 response = await client.request(
                     method=request.method,
                     url=url,
-                    data=data,
-                    headers=request.headers)
+                    content=data,
+                    headers=headers)
             else:
                 raise
 
@@ -181,7 +192,11 @@ class ProxyHandler:
 
     def _upstream_request_headers(self) -> Dict:
         '''
-        Inbound headers to forward on a streaming route.
+        Inbound headers to forward upstream, buffered or streaming alike.
+
+        Client-supplied `X-Forwarded-For` is overwritten rather than appended
+        to: an upstream that uses it for allowlisting, rate limiting or audit
+        logging must not be handed a value the caller chose.
 
         `Host` is dropped so httpx derives it from the target URL -- the
         upstream sees its own hostname, which is what a service doing Host
@@ -190,7 +205,17 @@ class ProxyHandler:
         we hand it.
         '''
 
-        skip = HOP_BY_HOP_HEADERS | {'host', 'content-length'}
+        # The `x-forwarded-*` set is dropped unconditionally rather than just
+        # overwritten below: if `remote_addr` were ever unset, an overwrite
+        # guarded on it would leave the caller's own value in place, which is
+        # exactly the header an upstream must not be able to be lied to about.
+        skip = HOP_BY_HOP_HEADERS | {
+            'host',
+            'content-length',
+            'x-forwarded-for',
+            'x-forwarded-host',
+            'x-forwarded-proto',
+        }
 
         headers = {
             key: value for key, value in request.headers.items()
@@ -210,7 +235,8 @@ class ProxyHandler:
         service_response
     ) -> Dict:
         '''
-        Upstream response headers to return to the caller.
+        Upstream response headers to return to the caller, buffered or
+        streaming alike.
 
         Framing headers are stripped: the body is re-chunked by the ASGI server
         as it streams, so an upstream `Content-Length` would contradict what we
@@ -221,15 +247,10 @@ class ProxyHandler:
 
         skip = HOP_BY_HOP_HEADERS | {'content-length', 'date', 'server'}
 
-        headers = {
+        return {
             key: value for key, value in service_response.headers.items()
             if key.lower() not in skip
         }
-
-        if request.remote_addr:
-            headers['X-Remote-Address'] = request.remote_addr
-
-        return headers
 
     async def _stream_request(
         self,
@@ -326,13 +347,12 @@ class ProxyHandler:
 
     async def _get_service_route(
         self,
-        ingress_route: str,
-        route_params: Dict
+        ingress_route: str
     ):
         # Create cache key for ingress route
         cache_key = CacheKey.mapped_route(
-            ingress_path=ingress_route,
-            kwargs=route_params)
+            service_name=self._service_map.service_name,
+            ingress_path=ingress_route)
 
         logger.info(f'Route cache key: {cache_key}')
 
@@ -364,8 +384,7 @@ class ProxyHandler:
         logger.info(f'Ingress route: {ingress_route}')
 
         service_route = await self._get_service_route(
-            ingress_route=ingress_route,
-            route_params=kwargs)
+            ingress_route=ingress_route)
 
         logger.info(f'Service route: {service_route}')
 
@@ -385,17 +404,22 @@ class ProxyHandler:
         service_response = await self._send_request(
             url=service_url)
 
-        # Forward sender address
-        headers = dict(service_response.headers)
-        headers['X-Remote-Address'] = request.remote_addr
-
         gateway_response = Response(
             response=service_response.content,
             status=service_response.status_code,
-            headers=dict(service_response.headers))
+            headers=self._upstream_response_headers(service_response))
+
+        # `elapsed` is a property that raises unless httpx timed a real
+        # transport round trip, so it cannot be read with a getattr default.
+        # Unguarded, this logging statement turned a perfectly good upstream
+        # response into a 500.
+        try:
+            elapsed = service_response.elapsed
+        except RuntimeError:
+            elapsed = None
 
         logger.info(
-            f'Response: {gateway_response.status_code}: {service_response.elapsed}')
+            f'Response: {gateway_response.status_code}: {elapsed}')
 
         return gateway_response
 
@@ -419,10 +443,6 @@ class ProxyHandler:
         '''
 
         logger.info(f'{request.method}: {request.url_rule}')
-
-        # Apply defined CORS rules
-        request.gateway_cors = self._configuration.cors
-        status_code = None
 
         try:
             return await self.handle_request(**kwargs)

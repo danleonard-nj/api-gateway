@@ -27,9 +27,18 @@ class RouteMap:
         as a route rule
         '''
 
+        # OPTIONS is forwarded upstream rather than answered here.  The
+        # gateway does not enforce CORS -- it passes the service's own policy
+        # through -- and Quart's automatic OPTIONS handling would otherwise
+        # short-circuit every preflight with a response the service never saw.
+        methods = list(self.allowed_methods)
+        if 'OPTIONS' not in {method.upper() for method in methods}:
+            methods.append('OPTIONS')
+
         app.add_url_rule(
             rule=self.gateway_endpoint,
             endpoint=self.endpoint_id,
-            methods=self.allowed_methods)
+            methods=methods,
+            provide_automatic_options=False)
 
         app.view_functions[self.endpoint_id] = proxy_request

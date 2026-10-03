@@ -1,2 +1,16 @@
 .env
 .bat
+*.bat
+
+.git
+.gitignore
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+logs/
+
+# NOTE: config.json / config.dev.json hold live credentials and are currently
+# REQUIRED in the image -- framework's Configuration loads them from disk and
+# the Helm chart mounts no configMap or secret.  They cannot simply be excluded
+# here; that migration is tracked separately (mount as a k8s Secret first).

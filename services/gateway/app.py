@@ -40,14 +40,6 @@ async def shutdown():
     await http_client.aclose()
 
 
-@app.after_request
-def after_request(response):
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Access-Control-Allow-Headers'] = '*'
-    response.headers['Access-Control-Allow-Methods'] = '*'
-    return response
-
-
 configure_serializer(app)
 
 
