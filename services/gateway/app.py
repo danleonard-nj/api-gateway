@@ -9,6 +9,7 @@ from quart import Quart
 
 from routes.health import health_bp
 from services.gateway import ApiGateway
+from utilities.cors import apply_default_cors
 from utilities.provider import ContainerProvider
 
 load_dotenv()
@@ -39,6 +40,8 @@ async def shutdown():
     http_client = provider.resolve(AsyncClient)
     await http_client.aclose()
 
+
+app.after_request(apply_default_cors)
 
 configure_serializer(app)
 

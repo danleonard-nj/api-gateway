@@ -1,6 +1,7 @@
-# NOTE: CORS is not enforced at the gateway.  The upstream service's own
-# Access-Control-* headers are passed through untouched, and OPTIONS
-# preflights are forwarded so the service answers them itself.
+# NOTE: CORS is not configured per service.  An upstream that sets its own
+# Access-Control-* headers has them passed through untouched; one that sets
+# none gets the gateway's open default (utilities/cors.py).  OPTIONS
+# preflights are forwarded so a service with a policy answers them itself.
 
 class ServiceConfiguration:
     def __init__(self, service: dict, name: str):

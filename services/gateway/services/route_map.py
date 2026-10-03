@@ -27,10 +27,11 @@ class RouteMap:
         as a route rule
         '''
 
-        # OPTIONS is forwarded upstream rather than answered here.  The
-        # gateway does not enforce CORS -- it passes the service's own policy
-        # through -- and Quart's automatic OPTIONS handling would otherwise
-        # short-circuit every preflight with a response the service never saw.
+        # OPTIONS is forwarded upstream rather than answered here.  A service
+        # with its own CORS policy has it passed through (one without gets the
+        # gateway default, see utilities/cors.py), and Quart's automatic
+        # OPTIONS handling would otherwise short-circuit every preflight with
+        # a response the service never saw.
         methods = list(self.allowed_methods)
         if 'OPTIONS' not in {method.upper() for method in methods}:
             methods.append('OPTIONS')
